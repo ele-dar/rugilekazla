@@ -52,3 +52,35 @@ collections:
         widget: "markdown"
         i18n: true
         required: false
+
+  - name: "blog"
+    label: "Blog"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{slug}}"
+    format: "frontmatter"
+    i18n: true
+    fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        i18n: true
+      - label: "Description"
+        name: "description"
+        widget: "text"
+        i18n: true
+        hint: "Shown on the blog index and used for the page meta description"
+      - label: "Publish Date"
+        name: "publishDate"
+        widget: "datetime"
+        i18n: duplicate
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        i18n: true
+        default: []
+        required: false
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        i18n: true
