@@ -1,0 +1,46 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { Locale } from '../i18n/ui';
+import { alternateUrls, entriesForLocale, useTranslations } from '../i18n/utils';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Props {
+	lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+/** Sort key: the first year in `date` ("2020", "2020-2023", "2020-now"). Undated entries last. */
+const startYear = (date?: string) => Number(date?.match(/\d{4}/)?.[0] ?? 0);
+
+const experience = entriesForLocale(await getCollection('experience'), lang).sort(
+	(a, b) => startYear(b.data.date) - startYear(a.data.date)
+);
+
+const entries = await Promise.all(
+	experience.map(async (entry) => ({
+		entry,
+		Content: (await render(entry)).Content,
+	}))
+);
+---
+
+<BaseLayout
+	title={t('experience.title')}
+	description={t('experience.description')}
+	lang={lang}
+	alternates={alternateUrls('experience')}
+>
+	<h1>{t('experience.heading')}</h1>
+
+	{
+		entries.map(({ entry, Content }) => (
+			<article>
+				<p>{entry.data.date}</p>
+
+				<Content />
+			</article>
+		))
+	}
+</BaseLayout>

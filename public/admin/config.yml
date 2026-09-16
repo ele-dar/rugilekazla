@@ -10,6 +10,14 @@ local_backend: true
 media_folder: "public/assets/uploads"
 public_folder: "/assets/uploads"
 
+# Each entry is stored once per language, in a folder named after the locale:
+# src/content/experience/lt/<slug>.md and src/content/experience/en/<slug>.md.
+# The editor shows both languages side by side and saves them together.
+i18n:
+  structure: multiple_folders
+  locales: [lt, en]
+  default_locale: lt
+
 collections:
   - name: "experience"
     label: "Experience"
@@ -17,10 +25,12 @@ collections:
     create: true
     slug: "{{slug}}"
     format: "frontmatter"
+    i18n: true
     fields:
       - label: "Type"
         name: "type"
         widget: "select"
+        i18n: duplicate
         options:
           - { label: "Education", value: "education" }
           - { label: "Work", value: "work" }
@@ -29,13 +39,16 @@ collections:
       - label: "Title"
         name: "title"
         widget: "string"
+        i18n: true
         hint: "Only for entry naming. Will not be visible in the website"
       - label: "Date"
         name: "date"
         widget: "string"
+        i18n: true
         hint: "e.g. 2020, 2020-2023, or 2020-now"
         required: false
       - label: "Body"
         name: "body"
         widget: "markdown"
+        i18n: true
         required: false

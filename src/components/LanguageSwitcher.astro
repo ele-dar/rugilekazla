@@ -1,0 +1,64 @@
+---
+import { locales, localeNames, ui, type Locale } from '../i18n/ui';
+
+interface Props {
+	/** Locale of the page this switcher is rendered on. */
+	current: Locale;
+	/** This page's URL in every locale. */
+	hrefs: Record<Locale, string>;
+}
+
+const { current, hrefs } = Astro.props;
+---
+
+<nav class="languages" aria-label={ui[current]['lang.label']}>
+	{
+		locales.map((locale) =>
+			locale === current ? (
+				<span class="lang" aria-current="true">
+					{localeNames[locale]}
+				</span>
+			) : (
+				<a class="lang" href={hrefs[locale]} lang={locale}>
+					{localeNames[locale]}
+				</a>
+			)
+		)
+	}
+</nav>
+
+<style>
+	.languages {
+		display: flex;
+		align-items: center;
+		gap: 0.125rem;
+		font-size: var(--text-sm);
+		line-height: 1;
+	}
+
+	.lang {
+		padding: 0.375rem 0.5rem;
+		border-radius: 999rem;
+		text-decoration: none;
+		color: var(--accent-dark);
+		transition:
+			color var(--theme-transition),
+			background-color var(--theme-transition);
+	}
+
+	a.lang:hover,
+	a.lang:focus {
+		color: var(--accent-text-over);
+		background-color: var(--accent-subtle-overlay);
+	}
+
+	.lang[aria-current] {
+		color: var(--gray-0);
+	}
+
+	@media (forced-colors: active) {
+		.lang[aria-current] {
+			color: SelectedItem;
+		}
+	}
+</style>

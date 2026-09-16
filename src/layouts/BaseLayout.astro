@@ -6,22 +6,27 @@ import Footer from '../components/Footer.astro';
 // Component Imports
 import MainHead from '../components/MainHead.astro';
 import Nav from '../components/Nav.astro';
+import type { Locale } from '../i18n/ui';
 
 interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
+	/** Defaults to 'en' so pages not yet translated keep their current behaviour. */
+	lang?: Locale | undefined;
+	/** This page's URL in every locale. Providing it shows the language switcher. */
+	alternates?: Record<Locale, string> | undefined;
 }
 
-const { title, description } = Astro.props;
+const { title, description, lang = 'en', alternates } = Astro.props;
 ---
 
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<MainHead title={title} description={description} />
 	</head>
 	<body>
 		<div class="stack backgrounds">
-			<Nav />
+			<Nav lang={lang} alternates={alternates} />
 			<slot />
 			<Footer />
 		</div>

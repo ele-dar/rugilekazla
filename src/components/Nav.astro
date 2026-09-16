@@ -1,13 +1,26 @@
 ---
+import { ui, type Locale } from '../i18n/ui';
+import { localizedPath } from '../i18n/utils';
 import Icon from './Icon.astro';
 import type { iconPaths } from './IconPaths';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
-/** Main menu items */
+interface Props {
+	/** Locale of the page this nav is rendered on. */
+	lang: Locale;
+	/** This page's URL in every locale. Omitted on pages that aren't translated yet. */
+	alternates?: Record<Locale, string> | undefined;
+}
+
+const { lang, alternates } = Astro.props;
+
+/** Main menu items. Only Experience is translated so far — the rest follow once their pages are. */
 const textLinks: { label: string; href: string }[] = [
 	{ label: 'Home', href: '/' },
 	{ label: 'Work', href: '/work/' },
 	{ label: 'About', href: '/about/' },
+	{ label: ui[lang]['nav.experience'], href: localizedPath('experience', lang) },
 ];
 
 /** Icon links to social media — edit these with links to your profiles! */
@@ -69,6 +82,8 @@ const isCurrentPage = (href: string) => {
 					))
 				}
 			</div>
+
+			{alternates && <LanguageSwitcher current={lang} hrefs={alternates} />}
 		</div>
 	</noscript>
 	<div id="menu-content" hidden>
@@ -94,6 +109,8 @@ const isCurrentPage = (href: string) => {
 					))
 				}
 			</div>
+
+			{alternates && <LanguageSwitcher current={lang} hrefs={alternates} />}
 
 			<div class="theme-toggle">
 				<ThemeToggle />
