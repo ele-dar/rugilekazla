@@ -1,0 +1,41 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Lets you run the CMS locally against the filesystem before Netlify
+# Identity/Git Gateway is configured. Run `npx decap-server` alongside
+# `astro dev` and open http://localhost:4321/admin/
+local_backend: true
+
+media_folder: "public/assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "experience"
+    label: "Experience"
+    folder: "src/content/experience"
+    create: true
+    slug: "{{slug}}"
+    format: "frontmatter"
+    fields:
+      - label: "Type"
+        name: "type"
+        widget: "select"
+        options:
+          - { label: "Education", value: "education" }
+          - { label: "Work", value: "work" }
+          - { label: "Training", value: "training" }
+          - { label: "Membership", value: "membership" }
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        hint: "Only for entry naming. Will not be visible in the website"
+      - label: "Date"
+        name: "date"
+        widget: "string"
+        hint: "e.g. 2020, 2020-2023, or 2020-now"
+        required: false
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        required: false
