@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* Global variables */
 :root {
 	/* Colors */
@@ -77,110 +79,100 @@
 	--theme-transition: 0.2s ease-in-out;
 }
 
-:root.theme-dark {
-	--gray-0: #ffffff;
-	--gray-50: #f3f4f7;
-	--gray-100: #e3e6ee;
-	--gray-200: #c3cadb;
-	--gray-300: #a3acc8;
-	--gray-400: #8490b5;
-	--gray-500: #6474a2;
-	--gray-600: #505d84;
-	--gray-700: #3d4663;
-	--gray-800: #283044;
-	--gray-900: #141925;
-	--gray-999-basis: 225, 31%, 5%;
-	--gray-999: #090b11;
+/* Register existing design tokens as Tailwind theme values. */
+@theme {
+	--color-gray-0: var(--gray-0);
+	--color-gray-100: var(--gray-100);
+	--color-gray-300: var(--gray-300);
+	--color-gray-800: var(--gray-800);
+	--color-gray-900: var(--gray-900);
+	--color-gray-999: var(--gray-999);
+	--color-accent-regular: var(--accent-regular);
+	--color-accent-dark: var(--accent-dark);
+	--color-accent-text-over: var(--accent-text-over);
+	--color-accent-subtle-overlay: var(--accent-subtle-overlay);
 
-	--accent-light: #1c0056;
-	--accent-regular: #7611a6;
-	--accent-dark: #c561f6;
-	--accent-overlay: hsla(280, 89%, 67%, 0.33);
-	--accent-subtle-overlay: hsla(281, 81%, 36%, 0.33);
-	--accent-text-over: var(--gray-0);
+	--font-brand: var(--font-brand);
 
-	--link-color: var(--accent-dark);
+	--text-sm: var(--text-sm);
+	--text-md: var(--text-md);
+	--text-lg: var(--text-lg);
+	--text-xl: var(--text-xl);
 
-	--gradient-stop-1: #4c11c6;
-	--gradient-subtle: linear-gradient(150deg, var(--gray-900) 19%, var(--gray-999) 81%);
-	--gradient-accent-orange: linear-gradient(
-		150deg,
-		#ca7879,
-		var(--accent-regular),
-		var(--accent-light)
-	);
-	--gradient-stroke: linear-gradient(180deg, var(--gray-600), var(--gray-800));
+	--shadow-md: var(--shadow-md);
+	--shadow-lg: var(--shadow-lg);
 
-	--shadow-sm:
-		0px 6px 3px rgba(255, 255, 255, 0.01), 0px 4px 2px rgba(255, 255, 255, 0.01),
-		0px 2px 2px rgba(255, 255, 255, 0.02), 0px 0px 1px rgba(255, 255, 255, 0.03);
-	--shadow-md:
-		0px 28px 11px rgba(255, 255, 255, 0.01), 0px 16px 10px rgba(255, 255, 255, 0.03),
-		0px 7px 7px rgba(255, 255, 255, 0.05), 0px 2px 4px rgba(255, 255, 255, 0.06);
-	--shadow-lg:
-		0px 62px 25px rgba(255, 255, 255, 0.01), 0px 35px 21px rgba(255, 255, 255, 0.05),
-		0px 16px 16px rgba(255, 255, 255, 0.1), 0px 4px 9px rgba(255, 255, 255, 0.12);
+	/* Matches this file's existing hand-rolled `.lg\:gap-*` breakpoint. */
+	--breakpoint-lg: 50em;
+	--breakpoint-xl: 60em;
 }
 
-html,
-body {
-	min-height: 100%;
-	overflow-x: hidden;
-}
+/*
+ * In Tailwind's own `base` layer so utility classes (in the `utilities`
+ * layer, which always wins) can override these element defaults — e.g. a
+ * `text-*` class on an `<a>` needs to beat this layer's `color: var(--link-color)`.
+ */
+@layer base {
+	html,
+	body {
+		min-height: 100%;
+		overflow-x: hidden;
+	}
 
-body {
-	background-color: var(--gray-999);
-	color: var(--gray-200);
-	font-family: var(--font-body);
-	-webkit-font-smoothing: antialiased;
-	line-height: 1.5;
-}
+	body {
+		background-color: var(--gray-999);
+		color: var(--gray-200);
+		font-family: var(--font-body);
+		-webkit-font-smoothing: antialiased;
+		line-height: 1.5;
+	}
 
-*,
-*::after,
-*::before {
-	box-sizing: border-box;
-	margin: 0;
-}
+	*,
+	*::after,
+	*::before {
+		box-sizing: border-box;
+		margin: 0;
+	}
 
-img {
-	max-width: 100%;
-	height: auto;
-}
+	img {
+		max-width: 100%;
+		height: auto;
+	}
 
-a {
-	color: var(--link-color);
-}
+	a {
+		color: var(--link-color);
+	}
 
-h1,
-h2,
-h3,
-h4,
-h5 {
-	line-height: 1.1;
-	font-family: var(--font-brand);
-	font-weight: 600;
-	color: var(--gray-100);
-}
+	h1,
+	h2,
+	h3,
+	h4,
+	h5 {
+		line-height: 1.1;
+		font-family: var(--font-brand);
+		font-weight: 600;
+		color: var(--gray-100);
+	}
 
-h1 {
-	font-size: var(--text-5xl);
-}
+	h1 {
+		font-size: var(--text-5xl);
+	}
 
-h2 {
-	font-size: var(--text-4xl);
-}
+	h2 {
+		font-size: var(--text-4xl);
+	}
 
-h3 {
-	font-size: var(--text-3xl);
-}
+	h3 {
+		font-size: var(--text-3xl);
+	}
 
-h4 {
-	font-size: var(--text-2xl);
-}
+	h4 {
+		font-size: var(--text-2xl);
+	}
 
-h5 {
-	font-size: var(--text-xl);
+	h5 {
+		font-size: var(--text-xl);
+	}
 }
 
 /* Utilities */

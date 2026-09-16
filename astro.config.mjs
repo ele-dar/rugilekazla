@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
@@ -9,5 +10,9 @@ export default defineConfig({
 	// Locale comes from src/i18n/ instead. Revisit once all pages live under /lt/ and /en/.
 	redirects: {
 		'/experience': '/lt/patirtis',
+	},
+
+	vite: {
+		plugins: [tailwindcss()],
 	},
 });
