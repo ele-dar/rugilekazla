@@ -1,15 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
-import type { Locale } from '../i18n/ui';
-import { useTranslations } from '../i18n/utils';
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait.jpg';
+import type { Locale, RouteName } from '../i18n/ui';
+import { localizedPath, useTranslations } from '../i18n/utils';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CallToAction from './CallToAction.astro';
-import ContactCTA from './ContactCTA.astro';
-import Grid from './Grid.astro';
 import Hero from './Hero.astro';
 import Icon from './Icon.astro';
-import PortfolioPreview from './PortfolioPreview.astro';
-import Skills from './Skills.astro';
+import type { iconPaths } from './IconPaths';
+
 
 interface Props {
 	lang: Locale;
@@ -22,6 +21,23 @@ const t = useTranslations(lang);
  * `routes` slug pattern the other pages use, since the default locale has no path prefix. */
 const alternates = { lt: '/', en: '/en/' } satisfies Record<Locale, string>;
 
+const phone = '+37062949815';
+const phoneDisplay = '+370 629 49815';
+
+/** Hero shortcut card — the pages most worth a click straight from the homepage.
+ *  `tone` alternates the icon bubble between the green and yellow accents. */
+const heroLinks: {
+	label: string;
+	route: RouteName;
+	icon: keyof typeof iconPaths;
+	tone: 'green' | 'yellow';
+}[] = [
+	{ label: t('nav.psychotherapy'), route: 'psychotherapy', icon: 'heart', tone: 'green' },
+	{ label: t('nav.about'), route: 'about', icon: 'user', tone: 'yellow' },
+	{ label: t('nav.trainings'), route: 'trainings', icon: 'graduation-cap', tone: 'green' },
+	{ label: t('nav.contacts'), route: 'contacts', icon: 'envelope', tone: 'yellow' },
+];
+
 const projects = (await getCollection('work'))
 	.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
 	.slice(0, 4);
@@ -29,198 +45,108 @@ const projects = (await getCollection('work'))
 
 <BaseLayout lang={lang} alternates={alternates}>
 	<div class="stack gap-20 lg:gap-48">
-		<div class="wrapper stack gap-8 lg:gap-20">
-			<header class="hero">
-				<Hero title={t('home.hero.title')} tagline={t('home.hero.tagline')} align="start" />
+		<!-- The tinted band runs full-bleed from under the nav to behind the shortcut card. -->
+		<div class="stack">
+			<div class="bg-green-200 pb-24 max-w-83rem lg:pb-28 ">
+				<header
+					class="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pt-4 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-16 lg:pt-8"
+				>
+					<Hero title={t('home.hero.title')} tagline={t('home.hero.tagline')} align="start">
+						<div class="flex flex-col gap-6 lg:gap-8">
+							<p class="mx-auto max-w-[44ch] text-base text-gray-300 lg:mx-0">
+								{t('home.hero.description')}
+							</p>
 
-				<img alt="" width="480" height="620" src="/assets/portrait.jpg" />
-			</header>
+							<a
+								href={`tel:${phone}`}
+								class="group mx-auto flex w-fit items-center gap-4 no-underline lg:mx-0"
+							>
+								<span
+									class="flex size-12 items-center justify-center rounded-full bg-yellow-500 text-gray-700 transition-colors duration-200 ease-in-out group-hover:bg-yellow-700"
+								>
+									<Icon icon="phone" size="1.25rem" />
+								</span>
+								<span class="text-lg font-semibold text-gray-700">{phoneDisplay}</span>
+							</a>
+						</div>
+					</Hero>
 
-			<Skills />
+					<div
+						class="mx-auto w-full max-w-sm rounded-[2rem] bg-white p-3 shadow-lg lg:max-w-none lg:rounded-[2.5rem] lg:p-4"
+					>
+						<Image
+							src={portrait}
+							alt=""
+							width={560}
+							height={700}
+							class="aspect-[4/5] w-full rounded-3xl object-cover object-top lg:rounded-[2rem]"
+						/>
+					</div>
+				</header>
+			</div>
+
+			<!-- Pulled up so the card straddles the edge of the tinted band. -->
+			<div class="relative z-10 mx-auto -mt-12 w-full max-w-6xl px-6 lg:-mt-14">
+				<ul
+					class="m-0 grid list-none grid-cols-1 divide-y divide-green-200 rounded-2xl bg-white p-0 shadow-md lg:grid-cols-4 lg:divide-x lg:divide-y-0 lg:rounded-3xl"
+				>
+					{
+						heroLinks.map(({ label, route, icon, tone }) => (
+							<li>
+								<a
+									href={localizedPath(route, lang)}
+									class="group flex items-center gap-4 px-6 py-5 no-underline lg:px-7 lg:py-6"
+								>
+									<span
+										class:list={[
+											'flex size-10 shrink-0 items-center justify-center rounded-full transition-colors duration-200 ease-in-out',
+											tone === 'green'
+												? 'bg-green-200 group-hover:bg-green-500'
+												: 'bg-yellow-200 group-hover:bg-yellow-500',
+										]}
+									>
+										<Icon icon={icon} size="1.125rem" color="var(--gray-600)" />
+									</span>
+									<span class="text-md font-medium text-gray-700 transition-colors duration-200 ease-in-out group-hover:text-green-800">
+										{label}
+									</span>
+									<svg
+										class="ml-auto shrink-0 lg:hidden"
+										viewBox="0 0 24 24"
+										width="16"
+										height="16"
+										fill="none"
+										stroke="var(--gray-300)"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"
+									>
+										<path d="m9 6 6 6-6 6" />
+									</svg>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+
+			<div class="mx-auto mt-14 w-full max-w-6xl px-6 lg:mt-20">
+				<figure class="mx-auto flex max-w-xl items-start gap-4 lg:gap-5">
+					<span
+						aria-hidden="true"
+						class="font-brand text-5xl leading-none font-semibold text-yellow-700 select-none"
+					>
+						&ldquo;
+					</span>
+					<blockquote class="text-md text-gray-700 lg:text-lg">
+						{t('home.quote')}
+					</blockquote>
+				</figure>
+			</div>
+
 		</div>
 
-		<main class="wrapper stack gap-20 lg:gap-48">
-			<section class="section with-background with-cta">
-				<header class="section-header stack gap-2 lg:gap-4">
-					<h3>{t('home.selectedWork.heading')}</h3>
-					<p>{t('home.selectedWork.tagline')}</p>
-				</header>
 
-				<div class="gallery">
-					<Grid variant="offset">
-						{
-							projects.map((project) => (
-								<li>
-									<PortfolioPreview project={project} />
-								</li>
-							))
-						}
-					</Grid>
-				</div>
-
-				<div class="cta">
-					<CallToAction href="/work/">
-						{t('home.selectedWork.viewAll')}
-						<Icon icon="arrow-right" size="1.2em" />
-					</CallToAction>
-				</div>
-			</section>
-
-			<section class="section with-background bg-variant">
-				<header class="section-header stack gap-2 lg:gap-4">
-					<h3>{t('home.mentions.heading')}</h3>
-					<p>{t('home.mentions.tagline')}</p>
-				</header>
-
-				<div class="gallery">
-					<Grid variant="small">
-						{
-							['Medium', 'BuzzFeed', 'The Next Web', 'awwwards.', 'TechCrunch'].map((brand) => (
-								<li class="mention-card">
-									<p>{brand}</p>
-								</li>
-							))
-						}
-					</Grid>
-				</div>
-			</section>
-		</main>
-
-		<ContactCTA />
 	</div>
 </BaseLayout>
-
-<style>
-	.hero {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 2rem;
-	}
-
-	.hero img {
-		aspect-ratio: 5 / 4;
-		object-fit: cover;
-		object-position: top;
-		border-radius: 1.5rem;
-		box-shadow: var(--shadow-md);
-	}
-
-	@media (min-width: 50em) {
-		.hero {
-			display: grid;
-			grid-template-columns: 6fr 4fr;
-			padding-inline: 2.5rem;
-			gap: 3.75rem;
-		}
-
-		.hero img {
-			aspect-ratio: 3 / 4;
-			border-radius: 4.5rem;
-			object-fit: cover;
-		}
-	}
-
-	/* ====================================================== */
-
-	.section {
-		display: grid;
-		gap: 2rem;
-	}
-
-	.with-background {
-		position: relative;
-	}
-
-	.with-background::before {
-		--hero-bg: var(--bg-image-subtle-2);
-
-		content: '';
-		position: absolute;
-		pointer-events: none;
-		left: 50%;
-		width: 100vw;
-		aspect-ratio: calc(2.25 / var(--bg-scale));
-		top: 0;
-		transform: translateY(-75%) translateX(-50%);
-		background:
-			url('/assets/backgrounds/noise.png') top center/220px repeat,
-			var(--hero-bg) center center / var(--bg-gradient-size) no-repeat,
-			var(--gray-999);
-		background-blend-mode: overlay, normal, normal, normal;
-		mix-blend-mode: var(--bg-blend-mode);
-		z-index: -1;
-	}
-
-	.with-background.bg-variant::before {
-		--hero-bg: var(--bg-image-subtle-1);
-	}
-
-	.section-header {
-		justify-self: center;
-		text-align: center;
-		max-width: 50ch;
-		font-size: var(--text-md);
-		color: var(--gray-300);
-	}
-
-	.section-header h3 {
-		font-size: var(--text-2xl);
-	}
-
-	@media (min-width: 50em) {
-		.section {
-			grid-template-columns: repeat(4, 1fr);
-			grid-template-areas: 'header header header header' 'gallery gallery gallery gallery';
-			gap: 5rem;
-		}
-
-		.section.with-cta {
-			grid-template-areas: 'header header header cta' 'gallery gallery gallery gallery';
-		}
-
-		.section-header {
-			grid-area: header;
-			font-size: var(--text-lg);
-		}
-
-		.section-header h3 {
-			font-size: var(--text-4xl);
-		}
-
-		.with-cta .section-header {
-			justify-self: flex-start;
-			text-align: left;
-		}
-
-		.gallery {
-			grid-area: gallery;
-		}
-
-		.cta {
-			grid-area: cta;
-		}
-	}
-
-	/* ====================================================== */
-
-	.mention-card {
-		display: flex;
-		height: 7rem;
-		justify-content: center;
-		align-items: center;
-		text-align: center;
-		border: 1px solid var(--gray-800);
-		border-radius: 1.5rem;
-		color: var(--gray-300);
-		background: var(--gradient-subtle);
-		box-shadow: var(--shadow-sm);
-	}
-
-	@media (min-width: 50em) {
-		.mention-card {
-			border-radius: 1.5rem;
-			height: 9.5rem;
-		}
-	}
-</style>

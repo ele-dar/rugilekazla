@@ -1,22 +1,29 @@
 ---
+import type { Locale } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
 import '../styles/global.css';
 
 interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
+	/** Defaults to 'en' so pages not yet translated keep their current behaviour. */
+	lang?: Locale | undefined;
 }
 
-const {
-	title = 'Jeanine White: Personal Site',
-	description = 'The personal site of Jeanine White',
-} = Astro.props;
+const { title, description, lang = 'en' } = Astro.props;
+const t = useTranslations(lang);
+
+/** Pages pass their own short title ('Patirtis'); the site name is appended here so every tab
+ * reads the same way. The home page passes no title and gets the site name on its own. */
+const siteTitle = t('site.title');
+const pageTitle = title ? `${title} | ${siteTitle}` : siteTitle;
 ---
 
 <meta charset="utf-8" />
-<meta name="description" property="og:description" content={description} />
+<meta name="description" property="og:description" content={description ?? t('site.description')} />
 <meta name="viewport" content="width=device-width" />
 <meta name="generator" content={Astro.generator} />
-<title>{title}</title>
+<title>{pageTitle}</title>
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" href="/favicon.ico" />

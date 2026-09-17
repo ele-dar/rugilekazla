@@ -38,6 +38,11 @@
   --green-700: #94a977;
   --green-800: #7f985d;
 
+  --yellow-200: #fbefbb;
+  --yellow-500: #f3e076;
+  --yellow-700: #e6d114;
+  --yellow-800: #bcab1a;
+
   --accent-light: #698352;
   --accent-regular: #c1d7ae;
   --accent-dark: #7f985d;
@@ -107,7 +112,12 @@
 @theme {
   --color-gray-0: var(--gray-0);
   --color-gray-100: var(--gray-100);
+  --color-gray-200: var(--gray-200);
   --color-gray-300: var(--gray-300);
+  --color-gray-400: var(--gray-400);
+  --color-gray-500: var(--gray-500);
+  --color-gray-600: var(--gray-600);
+  --color-gray-700: var(--gray-700);
   --color-gray-800: var(--gray-800);
   --color-gray-900: var(--gray-900);
   --color-gray-999: var(--gray-999);
@@ -116,6 +126,10 @@
   --color-green-500: var(--green-500);
   --color-green-700: var(--green-700);
   --color-green-800: var(--green-800);
+  --color-yellow-200: var(--yellow-200);
+  --color-yellow-500: var(--yellow-500);
+  --color-yellow-700: var(--yellow-700);
+  --color-yellow-800: var(--yellow-800);
   --color-accent-regular: var(--accent-regular);
   --color-accent-dark: var(--accent-dark);
   --color-accent-text-over: var(--accent-text-over);
@@ -127,7 +141,12 @@
   --text-md: var(--text-md);
   --text-lg: var(--text-lg);
   --text-xl: var(--text-xl);
+  --text-2xl: var(--text-2xl);
+  --text-3xl: var(--text-3xl);
+  --text-4xl: var(--text-4xl);
+  --text-5xl: var(--text-5xl);
 
+  --shadow-sm: var(--shadow-sm);
   --shadow-md: var(--shadow-md);
   --shadow-lg: var(--shadow-lg);
 
