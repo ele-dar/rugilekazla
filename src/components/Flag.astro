@@ -1,0 +1,16 @@
+---
+import { Image } from 'astro:assets';
+import gb from '../assets/flags/gb.svg';
+import lt from '../assets/flags/lt.svg';
+
+interface Props {
+	/** ISO country code — must match a file in src/assets/flags/. */
+	flag: 'lt' | 'gb';
+}
+
+const { flag } = Astro.props;
+
+const flags = { lt, gb };
+---
+
+<Image src={flags[flag]} alt="" width={32} height={32} class="block object-cover" />

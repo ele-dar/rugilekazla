@@ -1,0 +1,39 @@
+---
+import type { Locale } from '../i18n/ui';
+import { alternateUrls, useTranslations } from '../i18n/utils';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactCTA from './ContactCTA.astro';
+import Hero from './Hero.astro';
+
+interface Props {
+	lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+	title={t('articles.title')}
+	description={t('articles.description')}
+	lang={lang}
+	alternates={alternateUrls('articles')}
+>
+	<div class="stack gap-20">
+		<main class="wrapper stack gap-8">
+			<Hero title={t('articles.heading')} tagline={t('articles.tagline')} />
+			<p class="placeholder">{t('articles.placeholder')}</p>
+		</main>
+
+		<ContactCTA />
+	</div>
+</BaseLayout>
+
+<style>
+	.placeholder {
+		max-width: 60ch;
+		margin-inline: auto;
+		text-align: center;
+		color: var(--gray-300);
+	}
+</style>

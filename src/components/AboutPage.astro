@@ -1,0 +1,89 @@
+---
+import type { Locale } from '../i18n/ui';
+import { alternateUrls, useTranslations } from '../i18n/utils';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactCTA from './ContactCTA.astro';
+import Hero from './Hero.astro';
+
+interface Props {
+	lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+	title={t('about.title')}
+	description={t('about.description')}
+	lang={lang}
+	alternates={alternateUrls('about')}
+>
+	<div class="stack gap-20">
+		<main class="wrapper about">
+			<Hero title={t('about.heading')} tagline={t('about.tagline')} />
+
+			<section>
+				<h2 class="section-title">{t('about.background.title')}</h2>
+				<div class="content">
+					<p>{t('about.background.body')}</p>
+				</div>
+			</section>
+			<section>
+				<h2 class="section-title">{t('about.education.title')}</h2>
+				<div class="content">
+					<p>{t('about.education.body')}</p>
+				</div>
+			</section>
+			<section>
+				<h2 class="section-title">{t('about.approach.title')}</h2>
+				<div class="content">
+					<p>{t('about.approach.body')}</p>
+				</div>
+			</section>
+		</main>
+
+		<ContactCTA />
+	</div>
+</BaseLayout>
+
+<style>
+	.about {
+		display: flex;
+		flex-direction: column;
+		gap: 3.5rem;
+	}
+
+	section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		color: var(--gray-200);
+	}
+
+	.section-title {
+		grid-column-start: 1;
+		font-size: var(--text-xl);
+		color: var(--gray-0);
+	}
+
+	.content {
+		grid-column: 2 / 4;
+	}
+
+	@media (min-width: 50em) {
+		.about {
+			display: grid;
+			grid-template-columns: 1fr 60% 1fr;
+		}
+
+		.about > :global(:first-child) {
+			grid-column-start: 2;
+		}
+
+		section {
+			display: contents;
+			font-size: var(--text-lg);
+		}
+	}
+</style>
