@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import BlogPostPage from '../../../components/BlogPostPage.astro';
-import { localizedStaticPaths, slugify } from '../../../i18n/utils';
+import BlogPostPage from '~/components/pages/BlogPostPage.astro';
+import { localizedStaticPaths, slugify } from '~/i18n/utils';
 
 interface Props {
 	entry: CollectionEntry<'blog'>;

@@ -1,9 +1,8 @@
 ---
-import type { Locale } from '../i18n/ui';
-import { alternateUrls, useTranslations } from '../i18n/utils';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import ContactCTA from './ContactCTA.astro';
-import Hero from './Hero.astro';
+import type { Locale } from '~/i18n/ui';
+import { alternateUrls, useTranslations } from '~/i18n/utils';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Hero from '~/components/Hero.astro';
 
 interface Props {
 	lang: Locale;
@@ -24,8 +23,6 @@ const t = useTranslations(lang);
 			<Hero title={t('articles.heading')} tagline={t('articles.tagline')} />
 			<p class="placeholder">{t('articles.placeholder')}</p>
 		</main>
-
-		<ContactCTA />
 	</div>
 </BaseLayout>
 

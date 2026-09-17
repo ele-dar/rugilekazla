@@ -1,8 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
-import type { Locale } from '../i18n/ui';
-import { alternateUrls, entriesForLocale, localizedPostPath, slugify, useTranslations } from '../i18n/utils';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import type { Locale } from '~/i18n/ui';
+import { alternateUrls, entriesForLocale, localizedPostPath, slugify, useTranslations } from '~/i18n/utils';
+import BaseLayout from '~/layouts/BaseLayout.astro';
 
 interface Props {
 	lang: Locale;
