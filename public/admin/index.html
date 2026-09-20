@@ -9,6 +9,10 @@
   </head>
   <body>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <!-- Reads config.yml to work out which fields are translatable -->
+    <script src="https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    <!-- Refuses to save an entry that is only filled in for one language -->
+    <script src="/admin/require-all-locales.js"></script>
     <script>
       if (window.netlifyIdentity) {
         window.netlifyIdentity.on("init", (user) => {

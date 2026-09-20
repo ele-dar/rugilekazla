@@ -26,6 +26,17 @@ collections:
     slug: "{{slug}}"
     format: "frontmatter"
     i18n: true
+    # No date sorting here on purpose: the site orders entries by start and end year
+    # together (ongoing entries first), and the CMS Sort menu can only hold one field
+    # at a time, so it could never reproduce that order.
+    sortable_fields:
+      - field: title
+        label: "Title"
+    # Pick "Type" from the Group by menu to split the list into sections.
+    # Entries keep the selected sort order inside each section.
+    view_groups:
+      - label: "Type:"
+        field: type
     fields:
       - label: "Type"
         name: "type"
@@ -39,14 +50,22 @@ collections:
       - label: "Title"
         name: "title"
         widget: "string"
-        i18n: true
-        hint: "Only for entry naming. Will not be visible in the website"
-      - label: "Date"
-        name: "date"
+        i18n: duplicate
+        hint: "Only for entry naming. Will not be visible in the website. Shared by both languages -- typing it once fills the English copy"
+      - label: "Start year"
+        name: "startDate"
         widget: "string"
-        i18n: true
-        hint: "e.g. 2020, 2020-2023, or 2020-now"
+        i18n: duplicate
         required: false
+        pattern: ['^\d{4}$', "Four digits, e.g. 2014"]
+        hint: "Four-digit year. Leave blank for entries that carry no date at all, such as memberships -- then leave the end year blank too"
+      - label: "End year"
+        name: "endDate"
+        widget: "string"
+        i18n: duplicate
+        required: false
+        pattern: ['^\d{4}$', "Four digits, e.g. 2016"]
+        hint: "Leave blank while this is still ongoing -- the site shows 'dabar' / 'present'. For a one-year entry, repeat the start year"
       - label: "Body"
         name: "body"
         widget: "markdown"

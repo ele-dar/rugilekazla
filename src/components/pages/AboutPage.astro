@@ -1,8 +1,12 @@
 ---
-import type { Locale } from '~/i18n/ui';
-import { alternateUrls, useTranslations } from '~/i18n/utils';
+import { Image } from 'astro:assets';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import portrait from '~/assets/portrait-2.jpg';
+import type { Locale, RouteName, UIKey } from '~/i18n/ui';
+import { alternateUrls, entriesForLocale, localizedPath, useTranslations } from '~/i18n/utils';
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import Hero from '~/components/Hero.astro';
+import ButtonLink from '~/components/ButtonLink.astro';
+import { byRecency, dateLabel } from '~/utils/experience';
 
 interface Props {
 	lang: Locale;
@@ -10,6 +14,45 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+const experience = entriesForLocale(await getCollection('experience'), lang).sort((a, b) =>
+	byRecency(a.data, b.data)
+);
+
+/** Markdown bodies have to be rendered up front — `render()` is async, so it can't run in JSX. */
+const rendered = await Promise.all(
+	experience.map(async (entry) => ({
+		entry,
+		Content: (await render(entry)).Content,
+	}))
+);
+
+/** One block per `experience` entry type, in the order they appear on the page. */
+const sections: { type: CollectionEntry<'experience'>['data']['type']; heading: UIKey }[] = [
+	{ type: 'education', heading: 'about.section.education' },
+	{ type: 'work', heading: 'about.section.work' },
+	{ type: 'training', heading: 'about.section.training' },
+	{ type: 'membership', heading: 'about.section.membership' },
+];
+
+const blocks = sections
+	.map(({ type, heading }) => {
+		const items = rendered.filter(({ entry }) => entry.data.type === type);
+		return {
+			heading: t(heading),
+			items,
+			// Membership entries may carry no dates, so that column is dropped rather than left blank.
+			dated: items.some(({ entry }) => entry.data.startDate),
+		};
+	})
+	.filter(({ items }) => items.length > 0);
+
+/** Pages worth a click once someone has read the page. */
+const ctaLinks = [
+	{ route: 'psychotherapy', label: 'nav.psychotherapy' },
+	{ route: 'trainings', label: 'nav.trainings' },
+	{ route: 'contacts', label: 'nav.contacts' },
+] satisfies { route: RouteName; label: UIKey }[];
 ---
 
 <BaseLayout
@@ -18,69 +61,70 @@ const t = useTranslations(lang);
 	lang={lang}
 	alternates={alternateUrls('about')}
 >
-	<div class="stack gap-20">
-		<main class="wrapper about">
-			<Hero title={t('about.heading')} tagline={t('about.tagline')} />
+	<main class="mx-auto flex w-full max-w-5xl flex-col gap-14 px-6 py-10 lg:gap-16 lg:py-14">
+		<header class="grid gap-8 lg:grid-cols-[minmax(0,17rem)_1fr] lg:items-start lg:gap-12">
+			<!-- Heading first in the DOM so it leads on narrow screens, where the grid collapses
+				to one column; `lg:order-*` puts the portrait back on the left from lg up. -->
+			<div class="flex flex-col gap-4 lg:order-2 lg:pt-4">
+				<h1 class="text-3xl font-bold tracking-tight text-green-800 lg:text-4xl">
+					{t('about.heading')}
+				</h1>
+				<p class="max-w-[60ch] text-base text-gray-300">{t('about.intro')}</p>
+			</div>
 
-			<section>
-				<h2 class="section-title">{t('about.background.title')}</h2>
-				<div class="content">
-					<p>{t('about.background.body')}</p>
-				</div>
-			</section>
-			<section>
-				<h2 class="section-title">{t('about.education.title')}</h2>
-				<div class="content">
-					<p>{t('about.education.body')}</p>
-				</div>
-			</section>
-			<section>
-				<h2 class="section-title">{t('about.approach.title')}</h2>
-				<div class="content">
-					<p>{t('about.approach.body')}</p>
-				</div>
-			</section>
-		</main>
-	</div>
+			<div class="mx-auto w-full max-w-xs rounded-[2rem] bg-white p-3 shadow-lg lg:order-1 lg:mx-0">
+				<Image
+					src={portrait}
+					alt={t('about.portraitAlt')}
+					width={540}
+					height={675}
+					class="aspect-[4/5] w-full rounded-3xl object-cover object-top"
+				/>
+			</div>
+		</header>
+
+		{
+			blocks.map(({ heading, items, dated }) => (
+				<section class="flex flex-col gap-5">
+					<h2 class="text-xl font-semibold text-gray-700">{heading}</h2>
+
+					<ul class="m-0 flex list-none flex-col gap-5 p-0">
+						{items.map(({ entry, Content }) => (
+							<li
+								class:list={[
+									'grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 lg:gap-x-4',
+									dated && 'lg:grid-cols-[10rem_auto_1fr]',
+								]}
+							>
+								{dated && (
+									<p class="col-span-2 self-start font-bold text-green-800 lg:col-span-1">
+										{dateLabel(entry.data, t('experience.present'))}
+									</p>
+								)}
+
+								<span
+									aria-hidden="true"
+									class="mt-2 size-2 shrink-0 self-start rounded-full bg-green-700"
+								/>
+
+								<div class="flex flex-col gap-1">
+									<div class="entry-body">
+										<Content />
+									</div>
+								</div>
+							</li>
+						))}
+					</ul>
+				</section>
+			))
+		}
+
+		<nav class="flex flex-wrap gap-3" aria-label={t('about.heading')}>
+			{
+				ctaLinks.map(({ route, label }) => (
+					<ButtonLink href={localizedPath(route, lang)}>{t(label)}</ButtonLink>
+				))
+			}
+		</nav>
+	</main>
 </BaseLayout>
-
-<style>
-	.about {
-		display: flex;
-		flex-direction: column;
-		gap: 3.5rem;
-	}
-
-	section {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		color: var(--gray-200);
-	}
-
-	.section-title {
-		grid-column-start: 1;
-		font-size: var(--text-xl);
-		color: var(--gray-0);
-	}
-
-	.content {
-		grid-column: 2 / 4;
-	}
-
-	@media (min-width: 50em) {
-		.about {
-			display: grid;
-			grid-template-columns: 1fr 60% 1fr;
-		}
-
-		.about > :global(:first-child) {
-			grid-column-start: 2;
-		}
-
-		section {
-			display: contents;
-			font-size: var(--text-lg);
-		}
-	}
-</style>

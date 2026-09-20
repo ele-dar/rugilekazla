@@ -1,6 +1,6 @@
 ---
 type: work
 title: UAB Neuromeda
-date: 2025 – present
+startDate: "2025"
 ---
 **UAB Neuromeda.** Consulting adults, children and their parents.

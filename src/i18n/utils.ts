@@ -8,7 +8,7 @@ export function useTranslations(locale: Locale) {
 	};
 }
 
-/** Build a page URL, e.g. localizedPath('experience', 'lt') → '/lt/patirtis/' */
+/** Build a page URL, e.g. localizedPath('about', 'lt') → '/lt/apie-mane/' */
 export function localizedPath(route: RouteName, locale: Locale): string {
 	return `/${locale}/${routes[route][locale]}/`;
 }

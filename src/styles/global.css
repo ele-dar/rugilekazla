@@ -170,7 +170,7 @@
 
   body {
     background-color: var(--green-50);
-    color: var(--gray-200);
+    color: var(--gray-800);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     line-height: 1.5;
@@ -248,6 +248,19 @@
 .stack {
   display: flex;
   flex-direction: column;
+}
+
+/*
+ * Short bodies rendered from markdown (content collection entries, CMS fields).
+ * Their elements can't be reached with utility classes, so they're styled here.
+ * Unlayered, so these win over the element defaults in Tailwind's `base` layer.
+ */
+.entry-body p + p {
+  margin-top: 0.5rem;
+}
+
+.entry-body strong {
+  font-weight: 600;
 }
 
 .gap-2 {

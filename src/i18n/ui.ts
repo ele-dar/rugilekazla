@@ -5,7 +5,6 @@ export const defaultLocale: Locale = "lt";
 
 /** Localized path segment per page, keyed by a stable internal route name. */
 export const routes = {
-  experience: { lt: "patirtis", en: "experience" },
   blog: { lt: "tinklarastis", en: "blog" },
   about: { lt: "apie-mane", en: "about" },
   psychotherapy: { lt: "psichoterapija", en: "psychotherapy" },
@@ -27,11 +26,7 @@ export const localeNames: Record<Locale, string> = {
 const lt = {
   "site.title": "Psichologė Rugilė Kazlauskienė",
   "site.description": "Asmeninis psichologės Rugilės Kazlauskienės puslapis",
-  "experience.title": "Patirtis",
-  "experience.description":
-    "Rugilės Kazlauskienės išsilavinimas, kvalifikacija ir patirtis.",
-  "experience.heading": "Patirtis",
-  "nav.experience": "Patirtis",
+  "experience.present": "dabar",
   "blog.title": "Tinklaraštis",
   "blog.description": "Rugilės Kazlauskienės tinklaraščio įrašai.",
   "blog.heading": "Tinklaraštis",
@@ -64,14 +59,13 @@ const lt = {
   "about.description":
     "Apie Rugilę Kazlauskienę — išsilavinimas, patirtis ir darbo principai.",
   "about.heading": "Apie mane",
-  "about.tagline": "TODO: trumpas asmeninis pristatymas.",
-  "about.background.title": "Apie mane",
-  "about.background.body":
-    "TODO: papasakokite apie save, savo kelią ir darbo principus.",
-  "about.education.title": "Išsilavinimas ir kvalifikacija",
-  "about.education.body": "TODO: išsilavinimas, kvalifikacijos, sertifikatai.",
-  "about.approach.title": "Darbo principai",
-  "about.approach.body": "TODO: darbo metodai, vertybės, su kuo dirbate.",
+  "about.intro":
+    "Esu klinikinė psichologė, kognityvinės elgesio terapijos (KET) psichoterapeutė, beveik 10 metų dirbanti suaugusiųjų, paauglių, vaikų ir tėvų psichologijos srityse.  Konsultuoju privačioje praktikoje Kaune arba nuotoliniu būdu internetu. Konsultuoju suaugusius, paauglius, vaikus ir tėvus. Konsultuoju lietuvių ir anglų kalbomis.",
+  "about.portraitAlt": "Rugilė Kazlauskienė",
+  "about.section.education": "Išsilavinimas",
+  "about.section.work": "Darbo patirtis",
+  "about.section.training": "Stažuotės ir praktikos",
+  "about.section.membership": "Narystė",
 
   "psychotherapy.title": "Psichoterapija",
   "psychotherapy.description": "TODO: psichoterapijos paslaugų aprašymas.",
@@ -118,11 +112,7 @@ export const ui: Record<Locale, Record<UIKey, string>> = {
   en: {
     "site.title": "Psychologist Rugilė Kazlauskienė",
     "site.description": "Personal website of psychologist Rugilė Kazlauskienė",
-    "experience.title": "Experience",
-    "experience.description":
-      "Education, qualifications and experience of Rugilė Kazlauskienė.",
-    "experience.heading": "Experience",
-    "nav.experience": "Experience",
+    "experience.present": "present",
     "blog.title": "Blog",
     "blog.description": "Blog posts by Rugilė Kazlauskienė.",
     "blog.heading": "Blog",
@@ -156,14 +146,13 @@ export const ui: Record<Locale, Record<UIKey, string>> = {
     "about.description":
       "About Rugilė Kazlauskienė — education, experience and approach to work.",
     "about.heading": "About Me",
-    "about.tagline": "TODO: short personal introduction.",
-    "about.background.title": "About Me",
-    "about.background.body":
-      "TODO: write about yourself, your path and your approach to work.",
-    "about.education.title": "Education & Qualifications",
-    "about.education.body": "TODO: education, qualifications, certifications.",
-    "about.approach.title": "Approach to Work",
-    "about.approach.body": "TODO: working methods, values, who you work with.",
+    "about.intro":
+      "I am a clinical psychologist and a cognitive-behavioral therapy (CBT) psychotherapist with nearly 10 years of experience working with adults, adolescents, children, and parents. I provide consultations in private practice in Kaunas or remotely online. I work with adults, adolescents, children, and parents. I offer consultations in Lithuanian and English.",
+    "about.portraitAlt": "Rugilė Kazlauskienė",
+    "about.section.education": "Education",
+    "about.section.work": "Work Experience",
+    "about.section.training": "Internships & Practice",
+    "about.section.membership": "Membership",
 
     "psychotherapy.title": "Psychotherapy",
     "psychotherapy.description": "TODO: description of psychotherapy services.",
