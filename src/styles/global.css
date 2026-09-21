@@ -52,6 +52,8 @@
 
   --link-color: var(--accent-regular);
 
+  --link-body-color: #617a4c;
+
   /* Gradients */
   --gradient-stop-1: var(--accent-light);
   --gradient-stop-2: var(--accent-regular);
@@ -130,6 +132,7 @@
   --color-yellow-500: var(--yellow-500);
   --color-yellow-700: var(--yellow-700);
   --color-yellow-800: var(--yellow-800);
+  --color-link-body: var(--link-body-color);
   --color-accent-regular: var(--accent-regular);
   --color-accent-dark: var(--accent-dark);
   --color-accent-text-over: var(--accent-text-over);
@@ -261,6 +264,24 @@
 
 .entry-body strong {
   font-weight: 600;
+}
+
+/*
+ * Markdown links are underlined at rest, not just on hover: colour alone can't carry the
+ * affordance mid-paragraph (WCAG 1.4.1). Hover thickens the underline rather than changing
+ * the colour, so the contrast ratio holds in every state.
+ */
+.entry-body a {
+  color: var(--link-body-color);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-thickness var(--theme-transition);
+}
+
+.entry-body a:hover,
+.entry-body a:focus-visible {
+  text-decoration-thickness: 2px;
 }
 
 .gap-2 {

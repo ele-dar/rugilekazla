@@ -75,6 +75,12 @@ collections:
   - name: "blog"
     label: "Blog"
     folder: "src/content/blog"
+    # Same as the psychotherapy collection below: images inserted into the body
+    # land in src/ so Astro optimises them, and the path written into the markdown
+    # is relative to the entry file. Blog entries sit at the same depth, so the
+    # same three levels up apply.
+    media_folder: "/src/assets/uploads"
+    public_folder: "../../../assets/uploads"
     create: true
     slug: "{{slug}}"
     format: "frontmatter"
@@ -103,3 +109,73 @@ collections:
         name: "body"
         widget: "markdown"
         i18n: true
+
+  - name: "psychotherapy"
+    label: "Psychotherapy"
+    folder: "src/content/psychotherapy"
+    # Uploads live in src/ rather than public/ so that Astro optimises them
+    # (resizing, WebP, hashed filenames). The leading slash means "from the repo
+    # root"; public_folder is written into the entry instead, relative to the
+    # markdown file, which is the only form Astro's `image()` helper resolves.
+    media_folder: "/src/assets/uploads"
+    public_folder: "../../../assets/uploads"
+    create: true
+    slug: "{{slug}}"
+    format: "frontmatter"
+    i18n: true
+    # The entry list opens sorted by Order, so it matches the website. Only one
+    # sortable field may carry `default_sort`.
+    sortable_fields:
+      - field: order
+        label: "Order"
+        default_sort: "asc"
+      - field: title
+        label: "Title"
+    fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        i18n: true
+      - label: "Order"
+        name: "order"
+        widget: "number"
+        value_type: "int"
+        min: 1
+        i18n: duplicate
+        hint: "Position on the Psychotherapy page, lowest first. Shared by both languages, so the two lists stay in the same order"
+      - label: "Intro"
+        name: "intro"
+        widget: "markdown"
+        i18n: true
+        # A short lead-in, so the editor is the compact one and the toolbar drops
+        # headings, quotes and code -- those belong in the body below.
+        minimal: true
+        buttons: ["bold", "italic", "link", "bulleted-list", "numbered-list"]
+        editor_components: []
+        hint: "Short lead-in shown above the body. Bold, italics, links and lists work here; put a blank line between paragraphs"
+      - label: "Featured image"
+        name: "featuredImage"
+        widget: "image"
+        i18n: duplicate
+        hint: "Shared by both languages -- uploading it once fills the English copy"
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        i18n: true
+      - label: "Links"
+        name: "links"
+        widget: "list"
+        required: false
+        i18n: true
+        label_singular: "Link"
+        summary: "{{fields.text}}"
+        hint: "Shown at the bottom of the page, in this order. Internal links start with a slash, e.g. /lt/psichoterapija/tevu-konsultacijos/ -- external ones with https://. Translated, so add them in both languages"
+        fields:
+          - label: "Text"
+            name: "text"
+            widget: "string"
+          - label: "URL"
+            name: "url"
+            widget: "string"
+            pattern:
+              ['^(https?://|/|mailto:|tel:)', "Start with https://, /, mailto: or tel:"]

@@ -1,0 +1,108 @@
+---
+import { Image } from 'astro:assets';
+import { type CollectionEntry, render } from 'astro:content';
+import ButtonLink from '~/components/ButtonLink.astro';
+import Icon from '~/components/Icon.astro';
+import type { Locale } from '~/i18n/ui';
+import {
+	alternatePostUrls,
+	fileSlugForLocale,
+	localizedPath,
+	slugify,
+	useTranslations,
+} from '~/i18n/utils';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { markdownFieldToText, renderMarkdownField } from '~/utils/markdown';
+
+interface Props {
+	lang: Locale;
+	entry: CollectionEntry<'psychotherapy'>;
+}
+
+const { lang, entry } = Astro.props;
+const t = useTranslations(lang);
+const { Content } = await render(entry);
+
+// The CMS filename pairs this entry with its translation; the public URL slug is the
+// translated title instead, so each locale gets its own slug automatically.
+const alternates = await alternatePostUrls(
+	'psychotherapy',
+	'psychotherapy',
+	fileSlugForLocale(entry.id, lang),
+	(sibling) => slugify(sibling.data.title)
+);
+
+/** The intro is markdown, so it is rendered like the body; the meta description needs the
+ * same text stripped back to one plain line. */
+const intro = await renderMarkdownField(entry.data.intro);
+const description = await markdownFieldToText(entry.data.intro);
+
+/** Anything not starting with '/' leaves the site, so it opens in a new tab and is marked
+ *  with its own arrow — a link's destination shouldn't be a surprise. */
+const isExternal = (url: string) => !url.startsWith('/');
+---
+
+<BaseLayout title={entry.data.title} description={description} lang={lang} alternates={alternates}>
+	<!-- Full-bleed banner: a direct child of the layout's column, so it escapes the
+		<main> wrapper's max width and runs edge to edge under the nav. Decorative, so the
+		fixed height crops the photo rather than letting its own ratio drive the layout. -->
+	<Image
+		src={entry.data.featuredImage}
+		alt=""
+		width={1024}
+		height={256}
+		loading="eager"
+		fetchpriority="high"
+		class="h-40 w-full object-cover lg:h-52"
+	/>
+
+	<main class="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 py-10 lg:gap-10 lg:py-14">
+		<a
+			href={localizedPath('psychotherapy', lang)}
+			class="flex w-fit items-center gap-2 text-sm font-medium text-gray-300 no-underline transition-colors duration-200 ease-in-out hover:text-green-800"
+		>
+			<Icon icon="arrow-left" size="1rem" />
+			{t('psychotherapy.backLink')}
+		</a>
+
+		<header class="flex flex-col gap-4">
+			<h1 class="text-3xl font-bold tracking-tight text-green-800 lg:text-4xl">
+				{entry.data.title}
+			</h1>
+			<div class="entry-body max-w-[60ch] text-base text-gray-500" set:html={intro} />
+		</header>
+
+		<div class="entry-body max-w-[65ch] text-base text-gray-700">
+			<Content />
+		</div>
+
+		{
+			entry.data.links.length > 0 && (
+				<nav class="flex flex-col gap-3" aria-label={t('psychotherapy.links')}>
+					<ul class="m-0 flex list-none flex-col gap-2 p-0">
+						{entry.data.links.map(({ text, url }) => (
+							<li class="flex items-center gap-2">
+								<span aria-hidden="true" class="text-link-body">
+									{isExternal(url) ? <>&nearr;</> : <>&rarr;</>}
+								</span>
+								<a
+									href={url}
+									target={isExternal(url) ? '_blank' : undefined}
+									rel={isExternal(url) ? 'noopener noreferrer' : undefined}
+									class="text-link-body underline decoration-1 underline-offset-[0.2em] hover:decoration-2"
+								>
+									{text}
+								</a>
+							</li>
+						))}
+					</ul>
+				</nav>
+			)
+		}
+
+		<!-- Wrapped so the button sizes to its text instead of stretching across the column. -->
+		<div class="flex flex-wrap gap-3">
+			<ButtonLink href={localizedPath('contacts', lang)}>{t('psychotherapy.cta')}</ButtonLink>
+		</div>
+	</main>
+</BaseLayout>

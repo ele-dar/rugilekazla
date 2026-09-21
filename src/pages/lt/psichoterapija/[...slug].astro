@@ -1,0 +1,18 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PsychotherapyEntryPage from '~/components/pages/PsychotherapyEntryPage.astro';
+import { localizedStaticPaths, slugify } from '~/i18n/utils';
+
+interface Props {
+	entry: CollectionEntry<'psychotherapy'>;
+}
+
+export async function getStaticPaths() {
+	// URL slug comes from this locale's own title, not the CMS filename.
+	return localizedStaticPaths('psychotherapy', 'lt', (entry) => slugify(entry.data.title));
+}
+
+const { entry } = Astro.props;
+---
+
+<PsychotherapyEntryPage lang="lt" entry={entry} />

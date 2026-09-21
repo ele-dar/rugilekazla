@@ -1,8 +1,15 @@
 ---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import type { Locale } from '~/i18n/ui';
-import { alternateUrls, useTranslations } from '~/i18n/utils';
+import {
+	alternateUrls,
+	entriesForLocale,
+	localizedPostPath,
+	slugify,
+	useTranslations,
+} from '~/i18n/utils';
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import Hero from '~/components/Hero.astro';
 
 interface Props {
 	lang: Locale;
@@ -10,6 +17,12 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+/** `order` is set in the CMS and shared across locales, so both languages list the
+ * services in the same order. */
+const services = entriesForLocale(await getCollection('psychotherapy'), lang).sort(
+	(a, b) => a.data.order - b.data.order
+);
 ---
 
 <BaseLayout
@@ -18,19 +31,39 @@ const t = useTranslations(lang);
 	lang={lang}
 	alternates={alternateUrls('psychotherapy')}
 >
-	<div class="stack gap-20">
-		<main class="wrapper stack gap-8">
-			<Hero title={t('psychotherapy.heading')} tagline={t('psychotherapy.tagline')} />
-			<p class="placeholder">{t('psychotherapy.placeholder')}</p>
-		</main>
-	</div>
+	<main class="mx-auto flex w-full max-w-5xl flex-col gap-10 px-6 py-10 lg:gap-14 lg:py-14">
+		<header class="flex flex-col gap-4">
+			<h1 class="text-3xl font-bold tracking-tight text-green-800 lg:text-4xl">
+				{t('psychotherapy.heading')}
+			</h1>
+		</header>
+			<ul class="grid list-none grid-cols-1 gap-8 p-0 sm:grid-cols-2">
+			{
+				services.map((service) => (
+					<li>
+						<a
+							href={localizedPostPath('psychotherapy', lang, slugify(service.data.title))}
+							class="group relative block overflow-hidden rounded-2xl shadow-md no-underline transition-shadow duration-200 ease-in-out hover:shadow-lg"
+						>
+							<Image
+								src={service.data.featuredImage}
+								alt=""
+								width={640}
+								height={480}
+								class="aspect-[4/3] w-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+							/>
+							<!-- Scrim under the title, so it stays readable whatever the photo behind it. -->
+							<span
+								aria-hidden="true"
+								class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/25 to-transparent"
+							/>
+							<h2 class="absolute inset-x-0 bottom-0 p-4 text-lg font-semibold text-gray-0 lg:text-xl">
+								{service.data.title}
+							</h2>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</main>
 </BaseLayout>
-
-<style>
-	.placeholder {
-		max-width: 60ch;
-		margin-inline: auto;
-		text-align: center;
-		color: var(--gray-300);
-	}
-</style>

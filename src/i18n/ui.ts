@@ -70,9 +70,9 @@ const lt = {
   "psychotherapy.title": "Psichoterapija",
   "psychotherapy.description": "TODO: psichoterapijos paslaugų aprašymas.",
   "psychotherapy.heading": "Psichoterapija",
-  "psychotherapy.tagline": "TODO: trumpas paslaugos aprašymas.",
-  "psychotherapy.placeholder":
-    "TODO: šis puslapis dar rengiamas. Netrukus čia rasite informaciją apie psichoterapijos paslaugas.",
+  "psychotherapy.backLink": "Psichoterapija",
+  "psychotherapy.links": "Nuorodos",
+  "psychotherapy.cta": "Registruotis konsultacijai",
 
   "articles.title": "Straipsniai ir video",
   "articles.description":
@@ -157,9 +157,9 @@ export const ui: Record<Locale, Record<UIKey, string>> = {
     "psychotherapy.title": "Psychotherapy",
     "psychotherapy.description": "TODO: description of psychotherapy services.",
     "psychotherapy.heading": "Psychotherapy",
-    "psychotherapy.tagline": "TODO: short description of the service.",
-    "psychotherapy.placeholder":
-      "TODO: this page is still being written. Information about psychotherapy services will appear here soon.",
+    "psychotherapy.backLink": "Psychotherapy",
+    "psychotherapy.links": "Links",
+    "psychotherapy.cta": "Book a consultation",
 
     "articles.title": "Articles and Videos",
     "articles.description":
