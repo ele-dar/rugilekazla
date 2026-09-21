@@ -1,7 +1,14 @@
 ---
 import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import { type Locale } from '~/i18n/ui';
-import { localizedPath, useTranslations } from '~/i18n/utils';
+import {
+	entriesForLocale,
+	localizedPath,
+	localizedPostPath,
+	slugify,
+	useTranslations,
+} from '~/i18n/utils';
 import Icon from './Icon.astro';
 import type { iconPaths } from './IconPaths';
 import LanguageSwitcher from './LanguageSwitcher.astro';
@@ -20,10 +27,27 @@ const t = useTranslations(lang);
 /** Home lives at '/' for the default locale and '/en/' for English — see HomePage.astro. */
 const homeHrefs = { lt: '/', en: '/en/' } satisfies Record<Locale, string>;
 
-/** Main menu items. */
-const textLinks: { label: string; href: string }[] = [
+/** Each service gets a submenu entry under Psychotherapy, in the order set in the CMS. */
+const services = entriesForLocale(await getCollection('psychotherapy'), lang)
+	.sort((a, b) => a.data.order - b.data.order)
+	.map((service) => ({
+		label: service.data.title,
+		href: localizedPostPath('psychotherapy', lang, slugify(service.data.title)),
+	}));
+
+interface NavLink {
+	label: string;
+	href: string;
+}
+
+/** Main menu items. A `children` list renders as a dropdown from that item. */
+const textLinks: (NavLink & { children?: NavLink[] })[] = [
 	{ label: t('nav.home'), href: homeHrefs[lang] },
-	{ label: t('nav.psychotherapy'), href: localizedPath('psychotherapy', lang) },
+	{
+		label: t('nav.psychotherapy'),
+		href: localizedPath('psychotherapy', lang),
+		children: services,
+	},
 	{ label: t('nav.about'), href: localizedPath('about', lang) },
 	{ label: t('nav.articles'), href: localizedPath('articles', lang) },
 	{ label: t('nav.creativeWork'), href: localizedPath('creativeWork', lang) },
@@ -51,7 +75,7 @@ const isCurrentPage = (href: string) => {
 
 /** Desktop nav items — background pill: accent-dark for the current page, accent-regular on hover. */
 const desktopLinkClass =
-	'rounded-full px-3 py-1.5 text-sm text-gray-700 no-underline transition-colors duration-200 ease-in-out ' +
+	'inline-block rounded-full px-3 py-1.5 text-sm text-gray-700 no-underline transition-colors duration-200 ease-in-out ' +
 	'hover:text-green-800 active:text-green-500 ' +
 	'aria-[current=page]:bg-green-800 aria-[current=page]:text-gray-0 ' +
 	'aria-[current=page]:forced-colors:text-[SelectedItem]';
@@ -59,6 +83,20 @@ const desktopLinkClass =
 /** Mobile dropdown nav items — no pill, just text color: accent-dark current, accent-regular on hover. */
 const mobileLinkClass =
 	'rounded-full px-3 py-1.5 text-sm text-gray-700 no-underline transition-colors duration-200 ease-in-out ' +
+	'hover:text-green-800 active:text-green-500 ' +
+	'aria-[current=page]:text-green-800 ' +
+	'aria-[current=page]:forced-colors:text-[SelectedItem]';
+
+/** Dropdown items: same colours as the desktop menu, but block-level and never wrapping. */
+const dropdownLinkClass =
+	'block rounded-full px-3 py-1.5 text-sm whitespace-nowrap text-gray-700 no-underline transition-colors duration-200 ease-in-out ' +
+	'hover:text-green-800 active:text-green-500 ' +
+	'aria-[current=page]:bg-green-800 aria-[current=page]:text-gray-0 ' +
+	'aria-[current=page]:forced-colors:text-[SelectedItem]';
+
+/** Submenu items in the mobile sheet — smaller and dimmer, so they read as subordinate. */
+const mobileChildLinkClass =
+	'block rounded-full px-3 py-1 text-xs text-gray-500 no-underline transition-colors duration-200 ease-in-out ' +
 	'hover:text-green-800 active:text-green-500 ' +
 	'aria-[current=page]:text-green-800 ' +
 	'aria-[current=page]:forced-colors:text-[SelectedItem]';
@@ -95,11 +133,48 @@ const hamburgerBarClass =
 
 		<ul class="m-0 hidden list-none items-center gap-6 xl:flex">
 			{
-				textLinks.map(({ label, href }) => (
-					<li>
+				textLinks.map(({ label, href, children }) => (
+					<li class="group relative">
 						<a aria-current={isCurrentPage(href) ? 'page' : null} class={desktopLinkClass} href={href}>
 							{label}
+							{children && children.length > 0 && (
+								<svg
+									class="ml-1 inline-block align-middle transition-transform duration-200 ease-in-out group-hover:rotate-180 group-focus-within:rotate-180"
+									width="10"
+									height="10"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="3"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									aria-hidden="true"
+								>
+									<path d="m6 9 6 6 6-6" />
+								</svg>
+							)}
 						</a>
+
+						{/* Opens on hover and on keyboard focus. The wrapper starts at the pill's
+							bottom edge; its transparent `pt-2` lowers the panel while keeping the
+							hover area continuous, so the pointer never crosses a dead gap. */}
+						{children && children.length > 0 && (
+							<div class="invisible absolute top-full left-0 z-50 w-max min-w-full pt-2 opacity-0 transition-opacity duration-200 ease-in-out group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+							<ul class="m-0 flex w-full list-none flex-col gap-1 rounded-2xl bg-green-200 p-2 shadow-md">
+								{children.map((child) => (
+									<li>
+										<a
+											aria-current={isCurrentPage(child.href) ? 'page' : null}
+											class={dropdownLinkClass}
+											href={child.href}
+										>
+											{child.label}
+										</a>
+									</li>
+								))}
+							</ul>
+							</div>
+						)}
 					</li>
 				))
 			}
@@ -137,14 +212,29 @@ const hamburgerBarClass =
 
 	<!-- For browsers without JS. TO-DO check functionality -->
 	<noscript>
-		<div class="absolute inset-x-0 top-full z-50 flex flex-col gap-1 border-t border-gray-800 bg-gray-999 p-5 xl:hidden">
+		<div class="absolute inset-x-0 top-full z-50 flex flex-col gap-1 border-t border-gray-800 bg-green-200 p-5 xl:hidden">
 			<ul class="m-0 flex list-none flex-col gap-1 p-0">
 				{
-					textLinks.map(({ label, href }) => (
+					textLinks.map(({ label, href, children }) => (
 						<li>
 							<a aria-current={isCurrentPage(href) ? 'page' : null} class={mobileLinkClass} href={href}>
 								{label}
 							</a>
+							{children && children.length > 0 && (
+								<ul class="m-0 flex list-none flex-col gap-0.5 p-0 pr-3">
+									{children.map((child) => (
+										<li>
+											<a
+												aria-current={isCurrentPage(child.href) ? 'page' : null}
+												class={mobileChildLinkClass}
+												href={child.href}
+											>
+												{child.label}
+											</a>
+										</li>
+									))}
+								</ul>
+							)}
 						</li>
 					))
 				}
@@ -167,14 +257,29 @@ const hamburgerBarClass =
 	</noscript>
 
 	<!-- Mobile menu -->
-	<div id="mobile-menu" class="absolute inset-x-0 top-full z-50 hidden flex-col gap-1 bg-green-50 p-5 text-right drop-shadow-lg drop-shadow-green-50 xl:hidden">
+	<div id="mobile-menu" class="absolute inset-x-0 top-full z-50 hidden flex-col gap-1 bg-green-200 p-5 text-right drop-shadow-lg drop-shadow-green-200 xl:hidden">
 		<ul class="flex list-none flex-col gap-1 p-0">
 			{
-				textLinks.map(({ label, href }) => (
+				textLinks.map(({ label, href, children }) => (
 					<li>
 						<a aria-current={isCurrentPage(href) ? 'page' : null} class={mobileLinkClass} href={href}>
 							{label}
 						</a>
+						{children && children.length > 0 && (
+							<ul class="m-0 flex list-none flex-col gap-0.5 p-0 pr-3">
+								{children.map((child) => (
+									<li>
+										<a
+											aria-current={isCurrentPage(child.href) ? 'page' : null}
+											class={mobileChildLinkClass}
+											href={child.href}
+										>
+											{child.label}
+										</a>
+									</li>
+								))}
+							</ul>
+						)}
 					</li>
 				))
 			}
@@ -199,13 +304,11 @@ const hamburgerBarClass =
 <script>
 	const btn = document.getElementById('menu-toggle')!;
 	const menu = document.getElementById('mobile-menu')!;
-	const nav = document.getElementsByTagName('nav')[0];
 
 	btn.addEventListener('click', () => {
 		const expanded = btn.getAttribute('aria-expanded') === 'true';
 		btn.setAttribute('aria-expanded', String(!expanded));
 		menu.classList.toggle('hidden', expanded);
 		menu.classList.toggle('flex', !expanded);
-		nav.classList.toggle('bg-green-50', !expanded)
 	});
 </script>
