@@ -1,0 +1,53 @@
+# Temporary client demo on GitHub Pages: https://ele-dar.github.io/rugilekazla/
+#
+# Runs only when triggered by hand (Actions -> "Demo (GitHub Pages)" -> Run workflow), so
+# ordinary pushes to main never republish the demo. Delete this file and turn Pages off in
+# the repository settings once the demo is no longer needed.
+name: Demo (GitHub Pages)
+
+on:
+  workflow_dispatch:
+
+# The demo is served from a subpath, so the build needs a matching `base`; `site` gives the
+# canonical origin. Both are read by astro.config.mjs and are unset everywhere else.
+env:
+  SITE_URL: https://ele-dar.github.io
+  BASE_PATH: /rugilekazla
+  # Adds a noindex meta tag, so the demo is not indexed as a duplicate of the real site.
+  PUBLIC_DEMO: 'true'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than cancelling it half-published.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

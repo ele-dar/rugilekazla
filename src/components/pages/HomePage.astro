@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import portrait from '~/assets/portrait.jpg';
 import type { Locale, RouteName } from '~/i18n/ui';
-import { localizedPath, useTranslations } from '~/i18n/utils';
+import { localizedPath, useTranslations, withBase } from '~/i18n/utils';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import Hero from '~/components/Hero.astro';
 import Icon from '~/components/Icon.astro';
@@ -18,7 +18,7 @@ const t = useTranslations(lang);
 
 /** Home lives at '/' for the default locale and '/en/' for English — it doesn't follow the
  * `routes` slug pattern the other pages use, since the default locale has no path prefix. */
-const alternates = { lt: '/', en: '/en/' } satisfies Record<Locale, string>;
+const alternates = { lt: withBase('/'), en: withBase('/en/') } satisfies Record<Locale, string>;
 
 const phone = '+37062949815';
 const phoneDisplay = '+370 629 49815';

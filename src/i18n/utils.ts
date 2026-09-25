@@ -8,9 +8,19 @@ export function useTranslations(locale: Locale) {
 	};
 }
 
+/**
+ * Prefix a root-relative path with Astro's configured `base`, so every internal link still
+ * resolves when the build is served from a subpath rather than the site root (the GitHub
+ * Pages demo lives at '/rugilekazla/'). With the default base of '/' this is a no-op.
+ * Astro rewrites `src`/`href` on its own components and images, but not on paths we build.
+ */
+export function withBase(path: string): string {
+	return `${import.meta.env.BASE_URL.replace(/\/$/, '')}${path}`;
+}
+
 /** Build a page URL, e.g. localizedPath('about', 'lt') → '/lt/apie-mane/' */
 export function localizedPath(route: RouteName, locale: Locale): string {
-	return `/${locale}/${routes[route][locale]}/`;
+	return withBase(`/${locale}/${routes[route][locale]}/`);
 }
 
 /** Every locale's URL for one page, for the language switcher. */

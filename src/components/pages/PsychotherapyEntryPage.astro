@@ -10,6 +10,7 @@ import {
 	localizedPath,
 	slugify,
 	useTranslations,
+	withBase,
 } from '~/i18n/utils';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import { markdownFieldToText, renderMarkdownField } from '~/utils/markdown';
@@ -40,6 +41,10 @@ const description = await markdownFieldToText(entry.data.intro);
 /** Anything not starting with '/' leaves the site, so it opens in a new tab and is marked
  *  with its own arrow — a link's destination shouldn't be a surprise. */
 const isExternal = (url: string) => !url.startsWith('/');
+
+/** The CMS stores these links as typed, so an internal one needs the base adding — the same
+ *  treatment `baseLinks` gives the links inside an entry's markdown. */
+const linkHref = (url: string) => (isExternal(url) ? url : withBase(url));
 ---
 
 <BaseLayout title={entry.data.title} description={description} lang={lang} alternates={alternates}>
@@ -86,7 +91,7 @@ const isExternal = (url: string) => !url.startsWith('/');
 									{isExternal(url) ? <>&nearr;</> : <>&rarr;</>}
 								</span>
 								<a
-									href={url}
+									href={linkHref(url)}
 									target={isExternal(url) ? '_blank' : undefined}
 									rel={isExternal(url) ? 'noopener noreferrer' : undefined}
 									class="text-link-body underline decoration-1 underline-offset-[0.2em] hover:decoration-2"

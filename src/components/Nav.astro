@@ -8,6 +8,7 @@ import {
 	localizedPostPath,
 	slugify,
 	useTranslations,
+	withBase,
 } from '~/i18n/utils';
 import Icon from './Icon.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
@@ -25,7 +26,7 @@ const { lang, alternates } = Astro.props;
 const t = useTranslations(lang);
 
 /** Home lives at '/' for the default locale and '/en/' for English — see HomePage.astro. */
-const homeHrefs = { lt: '/', en: '/en/' } satisfies Record<Locale, string>;
+const homeHrefs = { lt: withBase('/'), en: withBase('/en/') } satisfies Record<Locale, string>;
 
 /** Each service gets a submenu entry under Psychotherapy, in the order set in the CMS. */
 const services = entriesForLocale(await getCollection('psychotherapy'), lang)
