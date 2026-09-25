@@ -242,10 +242,10 @@ collections:
         required: false
         hint: "Optional. Without one the card shows a placeholder drawn for its type -- a page, a screen or a microphone. Shared by both languages"
 
-  # The Kūryba page itself, not a list of things: exactly one entry, whose title is the
-  # page heading and whose body is the page. The site reads it at a fixed path, so adding
-  # or deleting entries here is turned off -- a second one would never appear on the site
-  # and a deleted one breaks the build. Everything else matches the collections above.
+  # The next two are pages rather than lists of things: exactly one entry each, whose title
+  # is the page heading and whose body is the page. The site reads each at a fixed path, so
+  # adding or deleting entries here is turned off -- a second one would never appear on the
+  # site and a deleted one breaks the build. Everything else matches the collections above.
   - name: "creative-work"
     label: "Creative Work page"
     label_singular: "Creative Work page"
@@ -269,3 +269,26 @@ collections:
         name: "body"
         widget: "markdown"
         i18n: true
+
+  - name: "trainings"
+    label: "Trainings page"
+    label_singular: "Trainings page"
+    folder: "src/content/trainings"
+    media_folder: "/src/assets/uploads"
+    public_folder: "../../../assets/uploads"
+    create: false
+    delete: false
+    slug: "{{slug}}"
+    format: "frontmatter"
+    i18n: true
+    fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        i18n: true
+        hint: "The heading at the top of the page, and the page's name in the browser tab"
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        i18n: true
+        hint: "The whole page. Internal links start with a slash, e.g. /lt/kontaktai/ -- external ones with https://"

@@ -9,6 +9,28 @@ const year = z.coerce.string().regex(/^\d{4}$/, "Must be a four-digit year");
 const blankToUndefined = (value: unknown) =>
   value === "" || value === null ? undefined : value;
 
+/**
+ * A page that *is* a single CMS entry rather than a list of things: one entry per locale at
+ * src/content/<base>/<locale>/index.md, whose title is the page's <h1> and whose body is the
+ * page. The glob loader drops the trailing `index` from a content id the way a directory
+ * index does, so each entry's id is just its locale.
+ *
+ * Exactly one entry, always at that id: the page looks it up directly, so a second entry
+ * would never be rendered and a deleted one fails the build. The CMS is locked to match
+ * (`create: false`, `delete: false` on these collections in public/admin/config.yml).
+ */
+const singleEntryPage = (directory: string) =>
+  defineCollection({
+    loader: glob({
+      base: `./src/content/${directory}`,
+      pattern: "**/*.md",
+    }),
+
+    schema: z.object({
+      title: z.string(),
+    }),
+  });
+
 export const collections = {
   experience: defineCollection({
     loader: glob({
@@ -92,23 +114,10 @@ export const collections = {
   }),
 
   // -----
-  // The "Kūryba" page itself rather than a list of things: one entry per locale in
-  // src/content/creative-work/<locale>/index.md, paired across languages by matching slug
-  // like the collections above. The title is the page's <h1> and the body is the page.
-  //
-  // Exactly one entry, always at that id: the page looks it up directly, so a second entry
-  // would never be rendered and a deleted one fails the build. The CMS is locked to match
-  // (`create: false`, `delete: false` in public/admin/config.yml).
-  creativeWork: defineCollection({
-    loader: glob({
-      base: "./src/content/creative-work",
-      pattern: "**/*.md",
-    }),
-
-    schema: z.object({
-      title: z.string(),
-    }),
-  }),
+  // The "Kūryba" and "Mokymai" pages themselves rather than lists of things — see
+  // `singleEntryPage` above for how both are stored and why each holds one entry.
+  creativeWork: singleEntryPage("creative-work"),
+  trainings: singleEntryPage("trainings"),
 
   // -----
   // Bilingual, like the collections above. The things Rugilė has published or appeared in

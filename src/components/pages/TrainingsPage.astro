@@ -1,8 +1,12 @@
 ---
-import type { Locale } from '~/i18n/ui';
-import { alternateUrls, useTranslations } from '~/i18n/utils';
-import BaseLayout from '~/layouts/BaseLayout.astro';
+import { getEntry, render } from 'astro:content';
+import ButtonLink from '~/components/ButtonLink.astro';
 import Hero from '~/components/Hero.astro';
+import Icon from '~/components/Icon.astro';
+import type { Locale } from '~/i18n/ui';
+import { alternateUrls, localizedPath, useTranslations } from '~/i18n/utils';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { socialLinks } from '~/socials';
 
 interface Props {
 	lang: Locale;
@@ -10,27 +14,70 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+/** The whole page is one CMS entry per locale, keyed by locale alone — see
+ *  `singleEntryPage` in src/content.config.ts. Missing it is a config error rather than an
+ *  empty page, so it fails the build naming the file to create instead of shipping a
+ *  heading-less page. The invitation and the profile links below are not part of it: they
+ *  are the same on both pages that carry them, and the profiles are shared with the nav. */
+const entry = await getEntry('trainings', lang);
+if (!entry) {
+	throw new Error(
+		`Missing src/content/trainings/${lang}/index.md — the "Mokymai" page is built from it.`
+	);
+}
+
+const { Content } = await render(entry);
 ---
 
 <BaseLayout
-	title={t('trainings.title')}
+	title={entry.data.title}
 	description={t('trainings.description')}
 	lang={lang}
 	alternates={alternateUrls('trainings')}
 >
-	<div class="stack gap-20">
-		<main class="wrapper stack gap-8">
-			<Hero title={t('trainings.heading')} tagline={t('trainings.tagline')} />
-			<p class="placeholder">{t('trainings.placeholder')}</p>
-		</main>
-	</div>
-</BaseLayout>
+	<main class="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-10 lg:gap-10 lg:py-14">
+		<Hero title={entry.data.title} />
 
-<style>
-	.placeholder {
-		max-width: 60ch;
-		margin-inline: auto;
-		text-align: center;
-		color: var(--gray-300);
-	}
-</style>
+		<div class="entry-body mx-auto text-base text-gray-700">
+			<Content />
+
+			<!-- Closes the body rather than sitting apart from it: it reads as its last
+				paragraph, and leads into the button below. -->
+			<p>{t('trainings.invite')}</p>
+		</div>
+
+		<!-- Closing band: the page's call to action on one side, the profiles on the other.
+			Two columns from `sm` up; below that there is no room for them side by side, so
+			they stack and both align left. -->
+		<div class="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+			<!-- The pill is an inline anchor, so its contents are laid out by this span. -->
+			<ButtonLink href={localizedPath('contacts', lang)}>
+
+					{t('trainings.cta')}
+			</ButtonLink>
+
+			<div class="flex items-center gap-2">
+				<span class="text-sm font-medium text-gray-500">{t('socials.follow')}</span>
+
+				<ul class="m-0 flex list-none gap-2 p-0">
+					{
+						socialLinks.map(({ href, icon, label }) => (
+							<li>
+								<a
+									href={href}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="flex size-10 items-center justify-center rounded-full bg-yellow-500 text-gray-700 no-underline shadow-md transition duration-200 ease-in-out hover:bg-yellow-700 hover:shadow-lg"
+								>
+									<span class="sr-only">{label}</span>
+									<Icon icon={icon} size="1.15rem" />
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+	</main>
+</BaseLayout>

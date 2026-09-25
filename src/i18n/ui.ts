@@ -51,6 +51,9 @@ const lt = {
   "nav.trainings": "Mokymai",
   "nav.contacts": "Kontaktai",
 
+  /** Label in front of the profile icons — in the nav and on "Mokymai". */
+  "socials.follow": "Sekite mane",
+
   "about.title": "Apie mane",
   "about.description":
     "Apie Rugilę Kazlauskienę — išsilavinimas, patirtis ir darbo principai.",
@@ -93,13 +96,16 @@ const lt = {
   /** The page's heading and its body come from the `creativeWork` collection, so the
    *  editor writes them in the CMS. Only the meta description is left here. */
   "creativeWork.description": "TODO: kūrybinių darbų skilties aprašymas.",
+  "creativeWork.cta": "Susisiekime",
 
-  "trainings.title": "Mokymai",
+  /** Like `creativeWork` above: heading and body come from the `trainings` collection,
+   *  so only the meta description is left here. */
   "trainings.description": "TODO: mokymų ir seminarų aprašymas.",
-  "trainings.heading": "Mokymai",
-  "trainings.tagline": "TODO: trumpas skilties aprašymas.",
-  "trainings.placeholder":
-    "TODO: šis puslapis dar rengiamas. Netrukus čia rasite informaciją apie mokymus.",
+  /** Plain prose: the button below it is the page's only link to the contacts page,
+   *  so the sentence leads into it rather than repeating it as a second link. */
+  "trainings.invite":
+    "Jei norite pakviesti mane paskaityti paskaitą ar pravesti seminarą jūsų renginyje, susisiekime.",
+  "trainings.cta": "Susisiekime",
 
   "contacts.title": "Kontaktai",
   "contacts.description": "TODO: kontaktinės informacijos aprašymas.",
@@ -142,6 +148,8 @@ export const ui: Record<Locale, Record<UIKey, string>> = {
     "nav.trainings": "Trainings",
     "nav.contacts": "Contacts",
 
+    "socials.follow": "Follow me here",
+
     "about.title": "About Me",
     "about.description":
       "About Rugilė Kazlauskienė — education, experience and approach to work.",
@@ -181,13 +189,12 @@ export const ui: Record<Locale, Record<UIKey, string>> = {
 
     "creativeWork.description":
       "TODO: description of the creative work section.",
+    "creativeWork.cta": "Let's get in touch",
 
-    "trainings.title": "Trainings",
     "trainings.description": "TODO: description of trainings and workshops.",
-    "trainings.heading": "Trainings",
-    "trainings.tagline": "TODO: short description of the section.",
-    "trainings.placeholder":
-      "TODO: this page is still being written. Information about trainings will appear here soon.",
+    "trainings.invite":
+      "If you would like to invite me to give a lecture or run a seminar at your event, let's get in touch.",
+    "trainings.cta": "Let's get in touch",
 
     "contacts.title": "Contacts",
     "contacts.description": "TODO: description of contact information.",

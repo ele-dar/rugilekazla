@@ -1,4 +1,5 @@
 import { createSatteriMarkdownProcessor } from '@astrojs/markdown-satteri';
+import { externalLinks } from './external-links';
 
 /**
  * Renders a markdown *field* — `intro`, and anything else the CMS stores in frontmatter
@@ -9,7 +10,7 @@ import { createSatteriMarkdownProcessor } from '@astrojs/markdown-satteri';
  * `@astrojs/markdown-satteri` is pinned to the exact version `astro` depends on. If that
  * ever drifts, npm installs a second copy rather than breaking, but keep them in step.
  */
-const processor = createSatteriMarkdownProcessor();
+const processor = createSatteriMarkdownProcessor({ hastPlugins: [externalLinks] });
 
 /** Markdown to HTML, for `set:html`. */
 export async function renderMarkdownField(source: string): Promise<string> {
