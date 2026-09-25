@@ -90,12 +90,9 @@ const lt = {
   "media.typePlural.video": "Video interviu",
   "media.typePlural.blog": "Tinklaraštis",
 
-  "creativeWork.title": "Kūryba",
+  /** The page's heading and its body come from the `creativeWork` collection, so the
+   *  editor writes them in the CMS. Only the meta description is left here. */
   "creativeWork.description": "TODO: kūrybinių darbų skilties aprašymas.",
-  "creativeWork.heading": "Kūryba",
-  "creativeWork.tagline": "TODO: trumpas skilties aprašymas.",
-  "creativeWork.placeholder":
-    "TODO: šis puslapis dar rengiamas. Netrukus čia rasite kūrybinius darbus.",
 
   "trainings.title": "Mokymai",
   "trainings.description": "TODO: mokymų ir seminarų aprašymas.",
@@ -182,13 +179,8 @@ export const ui: Record<Locale, Record<UIKey, string>> = {
     "media.typePlural.video": "Video interviews",
     "media.typePlural.blog": "Blog",
 
-    "creativeWork.title": "Creative Work",
     "creativeWork.description":
       "TODO: description of the creative work section.",
-    "creativeWork.heading": "Creative Work",
-    "creativeWork.tagline": "TODO: short description of the section.",
-    "creativeWork.placeholder":
-      "TODO: this page is still being written. Creative work will appear here soon.",
 
     "trainings.title": "Trainings",
     "trainings.description": "TODO: description of trainings and workshops.",

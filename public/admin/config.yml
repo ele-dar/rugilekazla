@@ -241,3 +241,31 @@ collections:
         i18n: duplicate
         required: false
         hint: "Optional. Without one the card shows a placeholder drawn for its type -- a page, a screen or a microphone. Shared by both languages"
+
+  # The Kūryba page itself, not a list of things: exactly one entry, whose title is the
+  # page heading and whose body is the page. The site reads it at a fixed path, so adding
+  # or deleting entries here is turned off -- a second one would never appear on the site
+  # and a deleted one breaks the build. Everything else matches the collections above.
+  - name: "creative-work"
+    label: "Creative Work page"
+    label_singular: "Creative Work page"
+    folder: "src/content/creative-work"
+    # Same as the collections above: body images land in src/ so Astro optimises them,
+    # and the path written into the entry is relative to the markdown file.
+    media_folder: "/src/assets/uploads"
+    public_folder: "../../../assets/uploads"
+    create: false
+    delete: false
+    slug: "{{slug}}"
+    format: "frontmatter"
+    i18n: true
+    fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        i18n: true
+        hint: "The heading at the top of the page, and the page's name in the browser tab"
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        i18n: true

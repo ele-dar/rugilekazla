@@ -1,8 +1,9 @@
 ---
+import { getEntry, render } from 'astro:content';
+import Hero from '~/components/Hero.astro';
 import type { Locale } from '~/i18n/ui';
 import { alternateUrls, useTranslations } from '~/i18n/utils';
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import Hero from '~/components/Hero.astro';
 
 interface Props {
 	lang: Locale;
@@ -10,27 +11,33 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+/** The whole page is one CMS entry per locale — see the `creativeWork` collection in
+ *  src/content.config.ts. The entry is src/content/creative-work/<locale>/index.md, and the
+ *  glob loader drops the trailing `index` from a content id the way a directory index does,
+ *  so the id is just the locale. Missing it is a config error rather than an empty page, so
+ *  it fails the build naming the file to create instead of shipping a heading-less page. */
+const entry = await getEntry('creativeWork', lang);
+if (!entry) {
+	throw new Error(
+		`Missing src/content/creative-work/${lang}/index.md — the "Kūryba" page is built from it.`
+	);
+}
+
+const { Content } = await render(entry);
 ---
 
 <BaseLayout
-	title={t('creativeWork.title')}
+	title={entry.data.title}
 	description={t('creativeWork.description')}
 	lang={lang}
 	alternates={alternateUrls('creativeWork')}
 >
-	<div class="stack gap-20">
-		<main class="wrapper stack gap-8">
-			<Hero title={t('creativeWork.heading')} tagline={t('creativeWork.tagline')} />
-			<p class="placeholder">{t('creativeWork.placeholder')}</p>
-		</main>
-	</div>
-</BaseLayout>
+	<main class="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 py-10 lg:gap-10 lg:py-14">
+		<Hero title={entry.data.title} />
 
-<style>
-	.placeholder {
-		max-width: 60ch;
-		margin-inline: auto;
-		text-align: center;
-		color: var(--gray-300);
-	}
-</style>
+		<div class="entry-body mx-auto max-w-[65ch] text-base text-gray-700">
+			<Content />
+		</div>
+	</main>
+</BaseLayout>

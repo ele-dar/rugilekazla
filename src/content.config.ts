@@ -92,6 +92,25 @@ export const collections = {
   }),
 
   // -----
+  // The "Kūryba" page itself rather than a list of things: one entry per locale in
+  // src/content/creative-work/<locale>/index.md, paired across languages by matching slug
+  // like the collections above. The title is the page's <h1> and the body is the page.
+  //
+  // Exactly one entry, always at that id: the page looks it up directly, so a second entry
+  // would never be rendered and a deleted one fails the build. The CMS is locked to match
+  // (`create: false`, `delete: false` in public/admin/config.yml).
+  creativeWork: defineCollection({
+    loader: glob({
+      base: "./src/content/creative-work",
+      pattern: "**/*.md",
+    }),
+
+    schema: z.object({
+      title: z.string(),
+    }),
+  }),
+
+  // -----
   // Bilingual, like the collections above. The things Rugilė has published or appeared in
   // *elsewhere* — someone else's site, channel or feed.
   //
