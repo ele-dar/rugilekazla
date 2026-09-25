@@ -52,32 +52,36 @@ const details: { icon: keyof typeof iconPaths; label: string; value: string; hre
 			are the point of the page, the map only helps you find the door. -->
 		<!-- No `items-start`: both columns stretch to the taller of the two, which is the map
 			at its `min-h`. The card then runs the full height with its content at the top. -->
-		<div class="grid gap-6 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-8">
+		<!-- `grid-cols-1` is `minmax(0,1fr)`: without it the implicit column sizes to its
+			widest content (the unbreakable email), pushing both past narrow screens. -->
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-8">
 			<div class="flex flex-col gap-6 rounded-3xl bg-gray-0 p-7 shadow-md lg:p-8">
+				<!-- On phones the icon shrinks and sits inline with the label, leaving the value the
+					full card width; from `sm` it grows and spans both lines beside them. -->
 				<ul class="m-0 flex list-none flex-col gap-5 p-0">
 					{
 						details.map(({ href, icon, label, value }) => (
-							<li class="flex items-center gap-4">
-								<span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-green-200 text-green-800">
-									<Icon icon={icon} size="1.25rem" />
+							<li class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 gap-y-1 sm:gap-x-4 sm:gap-y-0.5">
+								<span class="flex size-7 items-center justify-center rounded-full bg-green-200 text-sm text-green-800 sm:row-span-2 sm:size-11 sm:text-xl">
+									<Icon icon={icon} />
 								</span>
 
-								<span class="flex min-w-0 flex-col gap-0.5">
-									<span class="text-xs font-semibold tracking-wider text-gray-400 uppercase">
-										{label}
+								<span class="text-xs font-semibold tracking-wider text-gray-400 uppercase sm:self-end">
+									{label}
+								</span>
+
+								{href && !isPlaceholder(value) ? (
+									<a
+										href={href}
+										class="col-span-2 text-base font-medium wrap-break-word text-gray-700 no-underline transition-colors duration-200 ease-in-out hover:text-green-800 sm:col-span-1 sm:col-start-2 sm:self-start"
+									>
+										{value}
+									</a>
+								) : (
+									<span class="col-span-2 text-base font-medium wrap-break-word text-gray-700 sm:col-span-1 sm:col-start-2 sm:self-start">
+										{value}
 									</span>
-
-									{href && !isPlaceholder(value) ? (
-										<a
-											href={href}
-											class="text-base font-medium wrap-break-word text-gray-700 no-underline transition-colors duration-200 ease-in-out hover:text-green-800"
-										>
-											{value}
-										</a>
-									) : (
-										<span class="text-base font-medium wrap-break-word text-gray-700">{value}</span>
-									)}
-								</span>
+								)}
 							</li>
 						))
 					}

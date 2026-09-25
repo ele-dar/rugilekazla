@@ -1,5 +1,5 @@
 ---
-title: Teenage psichotherapy
+title: Teenage Psychotherapy
 order: 2
 intro: >-
   I am a clinical psychologist and a cognitive-behavioral therapy (CBT)
@@ -24,4 +24,5 @@ links:
   - text: Todo
     url: /test
 ---
+
 TODO: add translation

@@ -1,5 +1,5 @@
 ---
-title: Children psichotherapy
+title: Children Psychotherapy
 order: 3
 intro: >-
   I am a clinical psychologist and a cognitive-behavioral therapy (CBT)
@@ -21,4 +21,5 @@ intro: >-
   I provide consultations in Lithuanian or English.
 featuredImage: ../../../assets/uploads/f1c308e2-764a-459b-804a-45338b95d646.jpeg
 ---
+
 TODO: add translation

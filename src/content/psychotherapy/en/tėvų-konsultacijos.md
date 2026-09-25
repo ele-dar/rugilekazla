@@ -1,5 +1,5 @@
 ---
-title: Parent consultations
+title: Parent Consultations
 order: 4
 intro: >-
   I am a clinical psychologist and a cognitive-behavioral therapy (CBT)
@@ -21,4 +21,5 @@ intro: >-
   I provide consultations in Lithuanian or English.
 featuredImage: ../../../assets/uploads/f4d71cb5-fddf-4437-9c9a-a674e48dc1c4.jpeg
 ---
+
 TODO: add translation
