@@ -22,12 +22,22 @@ const flags: Record<Locale, 'lt' | 'gb'> = {
 /** With only two locales, the switcher is a single link to "the other" one. */
 const other = locales.find((locale) => locale !== current)!;
 
-const linkClass =
+/** Padding sits on the link and the circle on a wrapper inside it: putting both on one
+ *  element would make `rounded-full` clip the padded box instead of the flag. The value is
+ *  the same `--icon-padding` the social links use, inherited from `.menu-footer` in
+ *  Nav.astro, so the two stay in step; the fallback covers use outside that container. */
+const linkClass = 'group flex p-[var(--icon-padding,0.5rem)]';
+
+const flagClass =
 	'flex size-5 items-center justify-center overflow-hidden rounded-full ' +
-	'[&:where(:hover,:focus)]:shadow-[0_0_0_2px_var(--green-800)] ' +
+	'transition-shadow duration-200 ease-in-out ' +
+	'group-hover:shadow-[0_0_0_2px_var(--green-800)] ' +
+	'group-focus:shadow-[0_0_0_2px_var(--green-800)] ' +
 	'[&>img]:size-full';
 ---
 
 <a href={hrefs[other]} lang={other} aria-label={t('lang.switch')} class={linkClass}>
-	<Flag flag={flags[other]} />
+	<span class={flagClass}>
+		<Flag flag={flags[other]} />
+	</span>
 </a>

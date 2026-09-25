@@ -1,0 +1,21 @@
+<!--
+  Card stand-in for a blog post with no image of its own. One of three: the background is
+  shared so a gallery of mixed cards still reads as one grid, and only the motif differs.
+  An open journal, distinct in silhouette from the single sheet used for articles she did
+  not write. Drawn in the site's greens (the green-200 / 500 / 700 / 800 tokens from
+  global.css). 4:3, the aspect ratio the cards crop photos to.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" width="640" height="480">
+  <rect width="640" height="480" fill="#e9ede3" />
+  <g fill="#becaab">
+    <circle cx="512" cy="96" r="168" opacity=".55" />
+    <circle cx="128" cy="416" r="208" opacity=".4" />
+  </g>
+  <path d="M0 336c96-64 160-16 240-56s128-136 240-112c64 14 118 54 160 76v236H0Z" fill="#94a977" opacity=".35" />
+  <g stroke="#7f985d" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".7">
+    <path d="M320 186c-24-20-64-26-104-22v132c40-4 80 2 104 20" />
+    <path d="M320 186c24-20 64-26 104-22v132c-40-4-80 2-104 20" />
+    <path d="M320 186v130" />
+    <path d="M248 214h44M248 246h44M348 214h44M348 246h44" />
+  </g>
+</svg>

@@ -1,0 +1,86 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '~/components/Icon.astro';
+import type { iconPaths } from '~/components/IconPaths';
+import type { Locale } from '~/i18n/ui';
+import { useTranslations } from '~/i18n/utils';
+import type { MediaCard } from '~/utils/media';
+import articlePlaceholder from '~/assets/media-placeholder-article.svg';
+import blogPlaceholder from '~/assets/media-placeholder-blog.svg';
+import videoPlaceholder from '~/assets/media-placeholder-video.svg';
+
+interface Props {
+	card: MediaCard;
+	lang: Locale;
+}
+
+const { card, lang } = Astro.props;
+const t = useTranslations(lang);
+
+/** Stand-in when an entry has no image of its own — one drawn per type. */
+const placeholders = {
+	article: articlePlaceholder,
+	blog: blogPlaceholder,
+	video: videoPlaceholder,
+} satisfies Record<MediaCard['type'], typeof articlePlaceholder>;
+
+/** The badge icon per type. Both article kinds share one — the label tells them apart. */
+const typeIcons = {
+	article: 'pencil-line',
+	blog: 'pencil-line',
+	video: 'youtube-logo',
+} satisfies Record<MediaCard['type'], keyof typeof iconPaths>;
+
+const { type, title, publishDate, source, featuredImage, href, external } = card;
+const image = featuredImage ?? placeholders[type];
+const date = publishDate.toLocaleDateString(lang, {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+});
+---
+
+<a
+	href={href}
+	target={external ? '_blank' : null}
+	rel={external ? 'noopener noreferrer' : null}
+	class="group relative block overflow-hidden rounded-2xl shadow-md no-underline transition-shadow duration-200 ease-in-out hover:shadow-lg"
+>
+	<!-- Square, not the 4:3 the psychotherapy cards use: these cards are smaller, and at
+		4:3 the overlaid title, source and date cover most of the image. -->
+	<Image
+		src={image}
+		alt=""
+		width={640}
+		height={480}
+		class="aspect-square w-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+	/>
+
+	<!-- Scrim under the title, so it stays readable whatever the image behind it. -->
+	<span
+		aria-hidden="true"
+		class="absolute inset-0 bg-gradient-to-t from-gray-900/85 via-gray-900/30 to-transparent"
+	/>
+
+	<!-- Label small enough to need WCAG AA's 4.5:1, which green-800 on this pill misses;
+	     gray-700 clears it, and the card is green enough already. -->
+	<span
+		class="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-gray-0/90 px-2.5 py-0.5 text-xs font-semibold text-gray-700"
+	>
+		<Icon icon={typeIcons[type]} size="1em" />
+		{t(`media.type.${type}`)}
+	</span>
+
+	<div class="absolute inset-x-0 bottom-0 flex flex-col gap-0.5 p-3">
+		<!-- Clamped: a long title would otherwise grow up the card and swallow the image,
+			and these run long in Lithuanian. -->
+		<h2 class="line-clamp-3 text-base font-semibold text-gray-0">
+			{title}
+			{external && <span class="sr-only">({t('media.external')})</span>}
+		</h2>
+		<!-- Three sizes descending, so the eye lands on them in order of weight:
+			title, then who published it, then when. -->
+		{source && <p class="text-sm font-medium text-gray-0">{source}</p>}
+		<p class="text-xs text-gray-50">{date}</p>
+	</div>
+</a>

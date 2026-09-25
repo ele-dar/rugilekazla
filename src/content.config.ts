@@ -43,12 +43,20 @@ export const collections = {
       pattern: "**/*.md",
     }),
 
-    schema: z.object({
-      title: z.string(),
-      description: z.string(),
-      publishDate: z.coerce.date(),
-      tags: z.array(z.string()).default([]),
-    }),
+    schema: ({ image }) =>
+      z.object({
+        title: z.string(),
+        /** Never rendered on the page: this is the post's `<meta name="description">`,
+         *  for search results and link previews. Posts have no index of their own, so
+         *  nothing shows it as a teaser. */
+        description: z.string(),
+        publishDate: z.coerce.date(),
+        /** Two jobs: the banner across the top of the post, and the post's card in the
+         *  "Straipsniai ir video" gallery. Optional, unlike the psychotherapy one — a post
+         *  without it has no banner, and its card falls back to a placeholder. Decorative
+         *  in both places, so it carries no alt text. Stored like the images below. */
+        featuredImage: z.preprocess(blankToUndefined, image().optional()),
+      }),
   }),
 
   // -----
@@ -80,6 +88,41 @@ export const collections = {
           blankToUndefined,
           z.array(z.object({ text: z.string(), url: z.string() })).default([]),
         ),
+      }),
+  }),
+
+  // -----
+  // Bilingual, like the collections above. The things Rugilė has published or appeared in
+  // *elsewhere* — someone else's site, channel or feed.
+  //
+  // Her own writing is not repeated here: the "Straipsniai ir video" gallery merges this
+  // collection with `blog` and sorts the two together, so posting to the blog is all it
+  // takes to appear there. See src/utils/media.ts.
+  media: defineCollection({
+    loader: glob({
+      base: "./src/content/media",
+      pattern: "**/*.md",
+    }),
+
+    schema: ({ image }) =>
+      z.object({
+        type: z.enum(["article", "video"]),
+        title: z.string(),
+        publishDate: z.coerce.date(),
+        /** Where the card goes. Always outward, so it opens in a new tab. */
+        link: z
+          .string()
+          // The same rule the CMS enforces in the Link field's `pattern`.
+          .regex(/^https?:\/\//, "Must be a full URL, e.g. https://…"),
+        /** Who published it — the outlet, channel or show, e.g. '15min.lt' or 'LRT'.
+         *  Optional, and shown on the card above the date. Only external things have
+         *  one; her own posts are published here, so `blog` cards never show it. */
+        source: z.preprocess(blankToUndefined, z.string().optional()),
+        /** Optional: a card without one falls back to the placeholder drawn for its
+         *  type — see src/assets/media-placeholder-*.svg. Uploaded and stored like the
+         *  psychotherapy images above. Decorative, so it carries no alt text and is
+         *  rendered with `alt=""`. */
+        featuredImage: z.preprocess(blankToUndefined, image().optional()),
       }),
   }),
 };

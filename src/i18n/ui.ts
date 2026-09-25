@@ -5,9 +5,10 @@ export const defaultLocale: Locale = "lt";
 
 /** Localized path segment per page, keyed by a stable internal route name. */
 export const routes = {
-  blog: { lt: "tinklarastis", en: "blog" },
   about: { lt: "apie-mane", en: "about" },
   psychotherapy: { lt: "psichoterapija", en: "psychotherapy" },
+  // Both the gallery and, under it, every blog post — '/lt/straipsniai-ir-video/' and
+  // '/lt/straipsniai-ir-video/<slug>/'. Posts have no section of their own.
   articles: { lt: "straipsniai-ir-video", en: "articles-and-videos" },
   creativeWork: { lt: "kuryba", en: "creative-work" },
   trainings: { lt: "mokymai", en: "trainings" },
@@ -27,11 +28,6 @@ const lt = {
   "site.title": "Psichologė Rugilė Kazlauskienė",
   "site.description": "Asmeninis psichologės Rugilės Kazlauskienės puslapis",
   "experience.present": "dabar",
-  "blog.title": "Tinklaraštis",
-  "blog.description": "Rugilės Kazlauskienės tinklaraščio įrašai.",
-  "blog.heading": "Tinklaraštis",
-  "nav.blog": "Tinklaraštis",
-  "blog.backLink": "Tinklaraštis",
   "lang.label": "Kalba",
   "lang.switch": "Perjungti į anglų kalbą",
 
@@ -81,6 +77,18 @@ const lt = {
   "articles.tagline": "TODO: trumpas skilties aprašymas.",
   "articles.placeholder":
     "TODO: šis puslapis dar rengiamas. Netrukus čia rasite straipsnius ir vaizdo įrašus.",
+  /** Card badges on "Straipsniai ir video", one per `media` entry type. */
+  "media.type.article": "Straipsnis",
+  "media.type.video": "Interviu",
+  "media.type.blog": "Tinklaraštis",
+  "media.external": "atsidaro naujame lange",
+
+  /** Filter bar on "Straipsniai ir video". Plural, unlike the singular card badges. */
+  "articles.filter.legend": "Filtruoti pagal tipą",
+  "articles.filter.all": "Visi",
+  "media.typePlural.article": "Straipsniai žiniasklaidoje",
+  "media.typePlural.video": "Video interviu",
+  "media.typePlural.blog": "Tinklaraštis",
 
   "creativeWork.title": "Kūryba",
   "creativeWork.description": "TODO: kūrybinių darbų skilties aprašymas.",
@@ -113,11 +121,6 @@ export const ui: Record<Locale, Record<UIKey, string>> = {
     "site.title": "Psychologist Rugilė Kazlauskienė",
     "site.description": "Personal website of psychologist Rugilė Kazlauskienė",
     "experience.present": "present",
-    "blog.title": "Blog",
-    "blog.description": "Blog posts by Rugilė Kazlauskienė.",
-    "blog.heading": "Blog",
-    "nav.blog": "Blog",
-    "blog.backLink": "Blog",
     "lang.label": "Language",
     "lang.switch": "Switch to Lithuanian",
 
@@ -168,6 +171,16 @@ export const ui: Record<Locale, Record<UIKey, string>> = {
     "articles.tagline": "TODO: short description of the section.",
     "articles.placeholder":
       "TODO: this page is still being written. Articles and videos will appear here soon.",
+    "media.type.article": "Article",
+    "media.type.video": "Interview",
+    "media.type.blog": "Blog",
+    "media.external": "opens in a new tab",
+
+    "articles.filter.legend": "Filter by type",
+    "articles.filter.all": "All",
+    "media.typePlural.article": "Press articles",
+    "media.typePlural.video": "Video interviews",
+    "media.typePlural.blog": "Blog",
 
     "creativeWork.title": "Creative Work",
     "creativeWork.description":

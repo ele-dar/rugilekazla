@@ -1,0 +1,19 @@
+<!--
+  Card stand-in for a video with no image of its own. One of three: the background is
+  shared so a gallery of mixed cards still reads as one grid, and only the motif differs.
+  Drawn in the site's greens (the green-200 / 500 / 700 / 800 tokens from global.css).
+  4:3, the aspect ratio the cards crop photos to.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" width="640" height="480">
+  <rect width="640" height="480" fill="#e9ede3" />
+  <g fill="#becaab">
+    <circle cx="512" cy="96" r="168" opacity=".55" />
+    <circle cx="128" cy="416" r="208" opacity=".4" />
+  </g>
+  <path d="M0 336c96-64 160-16 240-56s128-136 240-112c64 14 118 54 160 76v236H0Z" fill="#94a977" opacity=".35" />
+  <g stroke="#7f985d" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".7">
+    <path d="M240 158h160a18 18 0 0 1 18 18v128a18 18 0 0 1-18 18H240a18 18 0 0 1-18-18V176a18 18 0 0 1 18-18Z" />
+    <path d="M304 206l50 34-50 34Z" />
+    <path d="M286 344h68" />
+  </g>
+</svg>

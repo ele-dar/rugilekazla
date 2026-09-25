@@ -94,17 +94,17 @@ collections:
         name: "description"
         widget: "text"
         i18n: true
-        hint: "Shown on the blog index and used for the page meta description"
+        hint: "Not shown on the site. Used as the page's meta description -- the grey summary Google shows under the link, and the preview text when the post is shared. One or two plain sentences, up to about 150 characters"
       - label: "Publish Date"
         name: "publishDate"
         widget: "datetime"
         i18n: duplicate
-      - label: "Tags"
-        name: "tags"
-        widget: "list"
-        i18n: true
-        default: []
+      - label: "Featured image"
+        name: "featuredImage"
+        widget: "image"
+        i18n: duplicate
         required: false
+        hint: "Shown as the banner across the top of the post, and on its card on the Articles and Videos page. Without one the post has no banner and the card shows a placeholder. Shared by both languages"
       - label: "Body"
         name: "body"
         widget: "markdown"
@@ -178,4 +178,66 @@ collections:
             name: "url"
             widget: "string"
             pattern:
-              ['^(https?://|/|mailto:|tel:)', "Start with https://, /, mailto: or tel:"]
+              [
+                "^(https?://|/|mailto:|tel:)",
+                "Start with https://, /, mailto: or tel:",
+              ]
+
+  - name: "media"
+    label: "Media"
+    folder: "src/content/media"
+    # Same as the collections above: uploads land in src/ so Astro optimises them,
+    # and the path written into the entry is relative to the markdown file.
+    media_folder: "/src/assets/uploads"
+    public_folder: "../../../assets/uploads"
+    create: true
+    slug: "{{slug}}"
+    format: "frontmatter"
+    i18n: true
+    # The list opens newest first, like the gallery on the website.
+    sortable_fields:
+      - field: publishDate
+        label: "Publish date"
+        default_sort: "desc"
+      - field: title
+        label: "Title"
+    # Pick "Type" from the Group by menu to split the list into sections.
+    view_groups:
+      - label: "Type:"
+        field: type
+    fields:
+      - label: "Type"
+        name: "type"
+        widget: "select"
+        i18n: duplicate
+        options:
+          - { label: "Article", value: "article" }
+          - { label: "Video", value: "video" }
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        i18n: true
+        hint: "Shown on the card"
+      - label: "Source"
+        name: "source"
+        widget: "string"
+        i18n: true
+        required: false
+        hint: "Optional. Who published it -- the outlet, channel or show, e.g. 15min.lt or LRT. Shown on the card above the date. Shared by both languages"
+      - label: "Publish date"
+        name: "publishDate"
+        widget: "datetime"
+        i18n: duplicate
+        hint: "When it was published. The gallery lists everything newest first"
+      - label: "Link"
+        name: "link"
+        widget: "string"
+        i18n: duplicate
+        pattern: ["^https?://", "Start with https://"]
+        hint: "The full address, e.g. https://www.youtube.com/watch?v=... -- it opens in a new tab"
+      - label: "Featured image"
+        name: "featuredImage"
+        widget: "image"
+        i18n: duplicate
+        required: false
+        hint: "Optional. Without one the card shows a placeholder drawn for its type -- a page, a screen or a microphone. Shared by both languages"

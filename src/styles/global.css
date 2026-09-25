@@ -153,10 +153,13 @@
   --shadow-md: var(--shadow-md);
   --shadow-lg: var(--shadow-lg);
 
-  /* Matches this file's existing hand-rolled `.lg\:gap-*` breakpoint. */
-  --breakpoint-lg: 50em;
-  /* Nav.astro's desktop/mobile collapse point — not used as a general layout breakpoint. */
-  --breakpoint-xl: 1235px;
+  /*
+   * No `--breakpoint-*` overrides: the project uses Tailwind's own scale (sm 40rem,
+   * md 48rem, lg 64rem, xl 80rem). Overriding only some of them is also what broke the
+   * variant ordering before — a px value among the rem ones can't be sorted against
+   * them, so `sm:` was emitted last and beat `lg:` and `xl:` at every width. A one-off
+   * breakpoint belongs in the component that needs it, as `min-[…]:` — see Nav.astro.
+   */
 }
 
 /*
@@ -258,7 +261,7 @@
  * Their elements can't be reached with utility classes, so they're styled here.
  * Unlayered, so these win over the element defaults in Tailwind's `base` layer.
  */
-.entry-body p + p {
+.entry-body p {
   margin-top: 0.5rem;
 }
 
@@ -284,54 +287,63 @@
   text-decoration-thickness: 2px;
 }
 
-.gap-2 {
-  gap: 0.5rem;
-}
-.gap-4 {
-  gap: 1rem;
-}
-.gap-8 {
-  gap: 2rem;
-}
-.gap-10 {
-  gap: 2.5rem;
-}
-.gap-15 {
-  gap: 3.75rem;
-}
-.gap-20 {
-  gap: 5rem;
-}
-.gap-30 {
-  gap: 7.5rem;
-}
-.gap-48 {
-  gap: 12rem;
+/*
+ * Blog posts run longer than a psychotherapy entry and reach for more than paragraphs:
+ * headings, lists, quotes and images. Tailwind's `base` layer resets all of these, so
+ * they are restored here rather than per page — both collections render through
+ * `.entry-body`, and a body should look the same wherever it came from.
+ */
+.entry-body > :first-child {
+  margin-top: 0;
 }
 
-@media (min-width: 50em) {
-  .lg\:gap-2 {
-    gap: 0.5rem;
-  }
-  .lg\:gap-4 {
-    gap: 1rem;
-  }
-  .lg\:gap-8 {
-    gap: 2rem;
-  }
-  .lg\:gap-10 {
-    gap: 2.5rem;
-  }
-  .lg\:gap-15 {
-    gap: 3.75rem;
-  }
-  .lg\:gap-20 {
-    gap: 5rem;
-  }
-  .lg\:gap-30 {
-    gap: 7.5rem;
-  }
-  .lg\:gap-48 {
-    gap: 12rem;
-  }
+.entry-body :is(h2, h3, h4) {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--gray-800);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.entry-body h2 {
+  font-size: var(--text-xl);
+}
+
+.entry-body h3 {
+  font-size: var(--text-lg);
+}
+
+.entry-body h4 {
+  font-size: var(--text-md);
+}
+
+/* `revert` hands the markers back to the browser, which Tailwind's reset removed. */
+.entry-body :is(ul, ol) {
+  margin-top: 0.5rem;
+  padding-left: 1.5rem;
+  list-style: revert;
+}
+
+.entry-body li + li {
+  margin-top: 0.25rem;
+}
+
+.entry-body blockquote {
+  margin-top: 1rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--green-500);
+  color: var(--gray-500);
+  font-style: italic;
+}
+
+.entry-body img {
+  margin-top: 1rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.entry-body hr {
+  margin-block: 2rem;
+  border: 0;
+  border-top: 1px solid var(--green-200);
 }

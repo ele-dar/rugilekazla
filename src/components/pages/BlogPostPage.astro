@@ -1,8 +1,15 @@
 ---
+import { Image } from 'astro:assets';
 import { type CollectionEntry, render } from 'astro:content';
 import Icon from '~/components/Icon.astro';
 import type { Locale } from '~/i18n/ui';
-import { alternatePostUrls, fileSlugForLocale, localizedPath, slugify, useTranslations } from '~/i18n/utils';
+import {
+	alternatePostUrls,
+	fileSlugForLocale,
+	localizedPath,
+	slugify,
+	useTranslations,
+} from '~/i18n/utils';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 
 interface Props {
@@ -13,14 +20,21 @@ interface Props {
 const { lang, post } = Astro.props;
 const t = useTranslations(lang);
 const { Content } = await render(post);
+
 // The CMS filename pairs this post with its translation; the public URL slug is the
 // translated title instead, so each locale gets its own slug automatically.
 const alternates = await alternatePostUrls(
 	'blog',
-	'blog',
+	'articles',
 	fileSlugForLocale(post.id, lang),
-	(entry) => slugify(entry.data.title)
+	(sibling) => slugify(sibling.data.title)
 );
+
+const date = post.data.publishDate.toLocaleDateString(lang, {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+});
 ---
 
 <BaseLayout
@@ -29,101 +43,48 @@ const alternates = await alternatePostUrls(
 	lang={lang}
 	alternates={alternates}
 >
-	<div class="stack gap-15">
-		<header class="wrapper stack gap-4">
-			<a class="back-link" href={localizedPath('blog', lang)}>
-				<Icon icon="arrow-left" /> {t('blog.backLink')}
-			</a>
-			<h1>{post.data.title}</h1>
-			<p class="date">
-				{post.data.publishDate.toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric' })}
-			</p>
-			{
-				post.data.tags.length > 0 && (
-					<ul class="tags">
-						{post.data.tags.map((tag) => (
-							<li>{tag}</li>
-						))}
-					</ul>
-				)
-			}
+	<!-- Full-bleed banner, like a psychotherapy entry: a direct child of the layout's
+		column, so it escapes the <main> wrapper's max width and runs edge to edge under
+		the nav. Decorative, so the fixed height crops the photo rather than letting its
+		own ratio drive the layout. Optional here, unlike psychotherapy — a post without
+		one simply starts at the back-link. -->
+	{
+		post.data.featuredImage && (
+			<Image
+				src={post.data.featuredImage}
+				alt=""
+				width={1024}
+				height={256}
+				loading="eager"
+				fetchpriority="high"
+				class="h-40 w-full object-cover lg:h-52"
+			/>
+		)
+	}
+
+	<main class="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 py-10 lg:gap-10 lg:py-14">
+		<!-- Posts have no index of their own: the gallery on "Straipsniai ir video" is
+		     where they are listed, so that is what a post goes back to. -->
+		<a
+			href={localizedPath('articles', lang)}
+			class="flex w-fit items-center gap-2 text-sm font-medium text-gray-300 no-underline transition-colors duration-200 ease-in-out hover:text-green-800"
+		>
+			<Icon icon="arrow-left" size="1rem" />
+			{t('articles.heading')}
+		</a>
+
+		<header class="flex flex-col gap-4">
+			<h1 class="text-3xl font-bold tracking-tight text-green-800 lg:text-4xl">
+				{post.data.title}
+			</h1>
+
+			<time datetime={post.data.publishDate.toISOString()} class="text-sm text-gray-500">
+				{date}
+			</time>
 		</header>
 
-		<main class="wrapper">
-			<div class="content">
-				<Content />
-			</div>
-		</main>
-	</div>
+		<div class="entry-body max-w-[65ch] text-base text-gray-700">
+			<Content />
+		</div>
+	</main>
 </BaseLayout>
-
-<style>
-	.back-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		text-decoration: 1px solid underline transparent;
-		text-underline-offset: 0.25em;
-		transition: text-decoration-color var(--theme-transition);
-	}
-
-	.back-link:hover,
-	.back-link:focus {
-		text-decoration-color: currentColor;
-	}
-
-	.date {
-		color: var(--gray-300);
-	}
-
-	.tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		list-style: none;
-		padding: 0;
-		font-size: var(--text-sm);
-	}
-
-	.tags li {
-		padding: 0.25rem 0.75rem;
-		border-radius: 999rem;
-		background: var(--gradient-subtle);
-		border: 1px solid var(--gray-800);
-	}
-
-	.content {
-		max-width: 65ch;
-		margin-inline: auto;
-	}
-
-	.content > :global(* + *) {
-		margin-top: 1rem;
-	}
-
-	.content :global(h1),
-	.content :global(h2),
-	.content :global(h3),
-	.content :global(h4),
-	.content :global(h5) {
-		margin: 1.5rem 0;
-	}
-
-	.content :global(img) {
-		border-radius: 1.5rem;
-		box-shadow: var(--shadow-sm);
-		background: var(--gradient-subtle);
-		border: 1px solid var(--gray-800);
-	}
-
-	.content :global(a) {
-		text-decoration: 1px solid underline transparent;
-		text-underline-offset: 0.25em;
-		transition: text-decoration-color var(--theme-transition);
-	}
-
-	.content :global(a:hover),
-	.content :global(a:focus) {
-		text-decoration-color: currentColor;
-	}
-</style>

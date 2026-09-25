@@ -1,8 +1,10 @@
 ---
+import Hero from '~/components/Hero.astro';
+import MediaCard from '~/components/MediaCard.astro';
 import type { Locale } from '~/i18n/ui';
 import { alternateUrls, useTranslations } from '~/i18n/utils';
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import Hero from '~/components/Hero.astro';
+import { galleryCards, type MediaCard as MediaCardData } from '~/utils/media';
 
 interface Props {
 	lang: Locale;
@@ -10,6 +12,17 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+/** `media` and `blog` merged, newest first — see src/utils/media.ts. */
+const cards = await galleryCards(lang);
+
+/** Fixed order, so the bar doesn't reshuffle as entries are added. Only types that
+ *  actually appear get a button: a filter that can only ever empty the page is worse
+ *  than no filter. With fewer than two there is nothing to choose between, so the bar
+ *  is dropped entirely. */
+const typeOrder = ['article', 'video', 'blog'] as const satisfies readonly MediaCardData['type'][];
+const presentTypes = typeOrder.filter((type) => cards.some((card) => card.type === type));
+const filters = presentTypes.length > 1 ? presentTypes : [];
 ---
 
 <BaseLayout
@@ -18,19 +31,84 @@ const t = useTranslations(lang);
 	lang={lang}
 	alternates={alternateUrls('articles')}
 >
-	<div class="stack gap-20">
-		<main class="wrapper stack gap-8">
-			<Hero title={t('articles.heading')} tagline={t('articles.tagline')} />
-			<p class="placeholder">{t('articles.placeholder')}</p>
-		</main>
-	</div>
+	<main class="mx-auto flex w-full max-w-5xl flex-col gap-10 px-6 py-10 lg:gap-14 lg:py-14">
+		<Hero title={t('articles.heading')}/>
+
+		{
+			cards.length === 0 ? (
+				<p class="mx-auto max-w-[60ch] text-center text-gray-500">{t('articles.placeholder')}</p>
+			) : (
+				<>
+					{filters.length > 0 && (
+						/* Radio buttons, not links or buttons: filtering is done entirely by CSS
+						   further down, so it needs no JavaScript and works on the first paint.
+						   The inputs are the state; the labels are what you see and click. */
+						<fieldset class="m-0 flex flex-wrap justify-center gap-2 border-0 p-0">
+							<legend class="sr-only">{t('articles.filter.legend')}</legend>
+
+							<input type="radio" name="type" id="filter-all" class="sr-only" checked />
+							<label for="filter-all">{t('articles.filter.all')}</label>
+
+							{presentTypes.map((type) => (
+								<>
+									<input type="radio" name="type" id={`filter-${type}`} class="sr-only" />
+									<label for={`filter-${type}`}>{t(`media.typePlural.${type}`)}</label>
+								</>
+							))}
+						</fieldset>
+					)}
+
+					<ul class="grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3">
+						{cards.map((card) => (
+							<li data-type={card.type}>
+								<MediaCard card={card} lang={lang} />
+							</li>
+						))}
+					</ul>
+				</>
+			)
+		}
+	</main>
 </BaseLayout>
 
 <style>
-	.placeholder {
-		max-width: 60ch;
-		margin-inline: auto;
-		text-align: center;
-		color: var(--gray-300);
+	/* The pills. Sized and coloured like the nav's current-page pill, so the two read as
+	   the same control. `sr-only` hides the radio itself, not from screen readers. */
+	fieldset label {
+		border-radius: 999rem;
+		padding: 0.375rem 0.875rem;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		color: var(--gray-700);
+		background: var(--green-200);
+		cursor: pointer;
+		transition: background-color var(--theme-transition), color var(--theme-transition);
+	}
+
+	fieldset label:hover {
+		background: var(--green-500);
+	}
+
+	input:checked + label {
+		background: var(--green-800);
+		color: var(--gray-0);
+	}
+
+	/* The radio is visually hidden, so its focus ring has to be drawn on the label. */
+	input:focus-visible + label {
+		outline: 2px solid var(--green-800);
+		outline-offset: 2px;
+	}
+
+	/*
+	 * The filter itself: whichever radio is checked hides every card that isn't its type.
+	 * `#filter-all` matches no rule, so it leaves the grid untouched. Browsers without
+	 * `:has()` support hide nothing and simply show everything — the page still works,
+	 * it just doesn't filter.
+	 */
+	main:has(#filter-article:checked) li:not([data-type='article']),
+	main:has(#filter-video:checked) li:not([data-type='video']),
+	main:has(#filter-blog:checked) li:not([data-type='blog']) {
+		display: none;
 	}
 </style>

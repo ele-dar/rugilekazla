@@ -101,12 +101,12 @@ const mobileChildLinkClass =
 	'aria-[current=page]:text-green-800 ' +
 	'aria-[current=page]:forced-colors:text-[SelectedItem]';
 
-const menuFooterClass = 'menu-footer [--icon-size:1.5rem] [--icon-padding:0.5rem] flex items-center gap-3 ';
+const menuFooterClass = 'menu-footer [--icon-size:1.5rem] [--icon-padding:0.5rem] flex items-center gap-2 ';
 
-const socialsClass = 'socials flex flex-wrap gap-2.5 text-[length:var(--icon-size)]';
+const socialsClass = 'socials flex flex-wrap gap-2 text-[length:var(--icon-size)]';
 
 const socialClass =
-	'social flex p-[var(--icon-padding)] no-underline text-gray-700 transition-colors duration-200 ease-in-out ' +
+	'social flex p-2 no-underline text-gray-700 transition-colors duration-200 ease-in-out ' +
 	'hover:text-green-800 active:text-green-500';
 
 /** One 1px bar of the hamburger icon; morphs into an X via `group-aria-expanded:*` on the button. */
@@ -115,9 +115,9 @@ const hamburgerBarClass =
 	'group-hover:bg-green-800 group-active:bg-green-500';
 ---
 
-<nav class="relative flex items-center justify-between bg-green-200 px-6 md:px-16 lg:px-24 xl:px-32 py-4 font-medium ">
+<nav class="relative flex items-center justify-between bg-green-200 px-6 md:px-16 lg:px-24 py-4 font-medium ">
 	<!-- Desktop menu left -->
-	<div class="flex items-center gap-6">
+	<div class="flex items-center gap-5">
 		<a href={homeHrefs[lang]} class="site-title flex items-center text-gray-0 no-underline">
 			<Image
 				src={logo}
@@ -131,7 +131,7 @@ const hamburgerBarClass =
 			/>
 		</a>
 
-		<ul class="m-0 hidden list-none items-center gap-6 xl:flex">
+		<ul class="m-0 hidden list-none items-center gap-5 xl:flex">
 			{
 				textLinks.map(({ label, href, children }) => (
 					<li class="group relative">

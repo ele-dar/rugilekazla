@@ -50,7 +50,7 @@ export function slugify(text: string): string {
 		.replace(/^-+|-+$/g, '');
 }
 
-/** Build a post URL, e.g. localizedPostPath('blog', 'lt', 'hello-world') → '/lt/tinklarastis/hello-world/' */
+/** Build a post URL, e.g. localizedPostPath('articles', 'lt', 'hello-world') → '/lt/straipsniai-ir-video/hello-world/' */
 export function localizedPostPath(route: RouteName, locale: Locale, slug: string): string {
 	return `${localizedPath(route, locale)}${slug}/`;
 }
