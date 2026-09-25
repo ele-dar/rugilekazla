@@ -110,9 +110,13 @@ const lt = {
   "contacts.title": "Kontaktai",
   "contacts.description": "TODO: kontaktinės informacijos aprašymas.",
   "contacts.heading": "Kontaktai",
-  "contacts.tagline": "TODO: kontaktinė informacija.",
-  "contacts.placeholder":
-    "TODO: šis puslapis dar rengiamas. Netrukus čia rasite kontaktinę informaciją.",
+  /** Labels above each detail on the contacts card. */
+  "contacts.email": "El. paštas",
+  "contacts.phone": "Telefonas",
+  "contacts.office": "Kabinetas",
+  /** Shown in the map panel until an address, and with it an embed URL, is set. */
+  "contacts.mapPlaceholder": "Žemėlapis su kabineto vieta",
+  "contacts.mapTitle": "Kabineto vieta žemėlapyje",
 } as const;
 
 export type UIKey = keyof typeof lt;
@@ -199,8 +203,10 @@ export const ui: Record<Locale, Record<UIKey, string>> = {
     "contacts.title": "Contacts",
     "contacts.description": "TODO: description of contact information.",
     "contacts.heading": "Contacts",
-    "contacts.tagline": "TODO: contact information.",
-    "contacts.placeholder":
-      "TODO: this page is still being written. Contact information will appear here soon.",
+    "contacts.email": "Email",
+    "contacts.phone": "Phone",
+    "contacts.office": "Office",
+    "contacts.mapPlaceholder": "Map showing office location",
+    "contacts.mapTitle": "Office location on a map",
   },
 };

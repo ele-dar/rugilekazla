@@ -6,7 +6,7 @@ intro: >-
   psychotherapist.
 
 
-  I provide consultations at my office in Kaunas (Maironio St. 11).
+  I provide consultations at my office in Kaunas (Maironio g. 11).
 
 
   I also offer remote psychotherapy online.

@@ -25,7 +25,11 @@ const { title, description, lang = 'en', alternates } = Astro.props;
 		<MainHead title={title} description={description} lang={lang} />
 	</head>
 	<body>
-		<div class="stack" >
+		<!-- At least a screenful tall, so that a short page (a 404, an empty section) still
+			fills the viewport and the footer's `margin-top: auto` has room to push it to the
+			bottom instead of leaving it stranded mid-screen. `dvh` rather than `vh`: on mobile
+			it tracks the browser chrome collapsing instead of overshooting by its height. -->
+		<div class="stack min-h-dvh">
 			<Nav lang={lang} alternates={alternates} />
 			<slot />
 			<Footer />

@@ -1,8 +1,12 @@
 ---
+import Hero from '~/components/Hero.astro';
+import Icon from '~/components/Icon.astro';
+import type { iconPaths } from '~/components/IconPaths';
+import { contactDetails, isPlaceholder } from '~/contacts';
 import type { Locale } from '~/i18n/ui';
 import { alternateUrls, useTranslations } from '~/i18n/utils';
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import Hero from '~/components/Hero.astro';
+import { socialLinks } from '~/socials';
 
 interface Props {
 	lang: Locale;
@@ -10,6 +14,29 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+/** One row of the details card. `href` is what the value links to, where it links at all —
+ *  an address is text, and a detail still awaiting its real value never links. */
+const details: { icon: keyof typeof iconPaths; label: string; value: string; href?: string }[] = [
+	{
+		icon: 'envelope',
+		label: t('contacts.email'),
+		value: contactDetails.email,
+		href: `mailto:${contactDetails.email}`,
+	},
+	{
+		icon: 'phone',
+		label: t('contacts.phone'),
+		value: contactDetails.phone,
+		// `tel:` takes no spaces, and the number is written with them for reading.
+		href: `tel:${contactDetails.phone.replace(/\s+/g, '')}`,
+	},
+	{
+		icon: 'map-pin',
+		label: t('contacts.office'),
+		value: contactDetails.address,
+	},
+];
 ---
 
 <BaseLayout
@@ -18,19 +45,84 @@ const t = useTranslations(lang);
 	lang={lang}
 	alternates={alternateUrls('contacts')}
 >
-	<div class="stack gap-20">
-		<main class="wrapper stack gap-8">
-			<Hero title={t('contacts.heading')} tagline={t('contacts.tagline')} />
-			<p class="placeholder">{t('contacts.placeholder')}</p>
-		</main>
-	</div>
+	<main class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10 lg:gap-12 lg:py-14">
+		<Hero title={t('contacts.heading')} align="start" />
+
+		<!-- Card beside map on wide screens. Below `lg` they stack, card first: the details
+			are the point of the page, the map only helps you find the door. -->
+		<!-- No `items-start`: both columns stretch to the taller of the two, which is the map
+			at its `min-h`. The card then runs the full height with its content at the top. -->
+		<div class="grid gap-6 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-8">
+			<div class="flex flex-col gap-6 rounded-3xl bg-gray-0 p-7 shadow-md lg:p-8">
+				<ul class="m-0 flex list-none flex-col gap-5 p-0">
+					{
+						details.map(({ href, icon, label, value }) => (
+							<li class="flex items-center gap-4">
+								<span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-green-200 text-green-800">
+									<Icon icon={icon} size="1.25rem" />
+								</span>
+
+								<span class="flex min-w-0 flex-col gap-0.5">
+									<span class="text-xs font-semibold tracking-wider text-gray-400 uppercase">
+										{label}
+									</span>
+
+									{href && !isPlaceholder(value) ? (
+										<a
+											href={href}
+											class="text-base font-medium wrap-break-word text-gray-700 no-underline transition-colors duration-200 ease-in-out hover:text-green-800"
+										>
+											{value}
+										</a>
+									) : (
+										<span class="text-base font-medium wrap-break-word text-gray-700">{value}</span>
+									)}
+								</span>
+							</li>
+						))
+					}
+				</ul>
+
+				<div class="flex flex-col gap-3 border-t border-gray-100 pt-6">
+					<span class="text-sm font-medium text-gray-500">{t('socials.follow')}</span>
+
+					<!-- Same pills as the closing band on "Mokymai", so the two read alike. -->
+					<ul class="m-0 flex list-none gap-2 p-0">
+						{
+							socialLinks.map(({ href, icon, label }) => (
+								<li>
+									<a
+										href={href}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="flex size-10 items-center justify-center rounded-full bg-yellow-500 text-gray-700 no-underline shadow-md transition duration-200 ease-in-out hover:bg-yellow-700 hover:shadow-lg"
+									>
+										<span class="sr-only">{label}</span>
+										<Icon icon={icon} size="1.15rem" />
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+			<iframe
+				src={contactDetails.mapEmbedUrl}
+				title={t('contacts.mapTitle')}
+				loading="lazy"
+				referrerpolicy="no-referrer-when-downgrade"
+				class="h-80 w-full rounded-3xl border-0 shadow-md lg:h-full lg:min-h-112"
+			/>
+		</div>
+	</main>
 </BaseLayout>
 
 <style>
-	.placeholder {
-		max-width: 60ch;
-		margin-inline: auto;
-		text-align: center;
-		color: var(--gray-300);
+	.map-placeholder {
+		background-image: repeating-linear-gradient(
+			-45deg,
+			var(--gray-50) 0 10px,
+			transparent 10px 20px
+		);
 	}
 </style>
