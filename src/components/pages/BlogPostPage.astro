@@ -67,7 +67,7 @@ const date = post.data.publishDate.toLocaleDateString(lang, {
 		     where they are listed, so that is what a post goes back to. -->
 		<a
 			href={localizedPath('articles', lang)}
-			class="flex w-fit items-center gap-2 text-sm font-medium text-gray-300 no-underline transition-colors duration-200 ease-in-out hover:text-green-800"
+			class="flex w-fit items-center gap-2 text-sm font-medium text-muted no-underline transition-colors duration-200 ease-in-out hover:text-green-800"
 		>
 			<Icon icon="arrow-left" size="1rem" />
 			{t('articles.heading')}
@@ -78,7 +78,7 @@ const date = post.data.publishDate.toLocaleDateString(lang, {
 				{post.data.title}
 			</h1>
 
-			<time datetime={post.data.publishDate.toISOString()} class="text-sm text-gray-500">
+			<time datetime={post.data.publishDate.toISOString()} class="text-sm text-muted">
 				{date}
 			</time>
 		</header>

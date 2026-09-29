@@ -64,7 +64,7 @@ const linkHref = (url: string) => (isExternal(url) ? url : withBase(url));
 	<main class="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 py-10 lg:gap-10 lg:py-14">
 		<a
 			href={localizedPath('psychotherapy', lang)}
-			class="flex w-fit items-center gap-2 text-sm font-medium text-gray-300 no-underline transition-colors duration-200 ease-in-out hover:text-green-800"
+			class="flex w-fit items-center gap-2 text-sm font-medium text-muted no-underline transition-colors duration-200 ease-in-out hover:text-green-800"
 		>
 			<Icon icon="arrow-left" size="1rem" />
 			{t('psychotherapy.backLink')}
@@ -74,7 +74,7 @@ const linkHref = (url: string) => (isExternal(url) ? url : withBase(url));
 			<h1 class="text-3xl font-bold tracking-tight text-green-800 lg:text-4xl">
 				{entry.data.title}
 			</h1>
-			<div class="entry-body max-w-[60ch] text-base text-gray-500" set:html={intro} />
+			<div class="entry-body max-w-[60ch] text-base text-muted" set:html={intro} />
 		</header>
 
 		<div class="entry-body max-w-[65ch] text-base text-gray-700">

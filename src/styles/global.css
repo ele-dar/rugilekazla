@@ -5,21 +5,6 @@
 /* Global variables */
 :root {
   /* Colors */
-  /* --gray-0: #090b11;
-  --gray-50: #141925;
-  --gray-100: #283044;
-  --gray-200: #3d4663;
-  --gray-300: #505d84;
-  --gray-400: #6474a2;
-  --gray-500: #8490b5;
-  --gray-600: #a3acc8;
-  --gray-700: #c3cadb;
-  --gray-800: #e3e6ee;
-  --gray-900: #f3f4f7;
-  --gray-999-basis: 0, 0%, 100%;
-  --gray-999_40: hsla(var(--gray-999-basis), 0.4);
-  --gray-999: #f0ede2; */
-
   --gray-0: #f3f4f7;
   --gray-50: #e3e6ee;
   --gray-100: rgb(195, 202, 219);
@@ -49,6 +34,8 @@
   --accent-overlay: #e2e8ce;
   --accent-subtle-overlay: var(--accent-overlay);
   --accent-text-over: var(--gray-999);
+
+  --text-muted: var(--gray-500);
 
   --link-color: var(--accent-regular);
 
@@ -132,6 +119,7 @@
   --color-yellow-500: var(--yellow-500);
   --color-yellow-700: var(--yellow-700);
   --color-yellow-800: var(--yellow-800);
+  --color-muted: var(--text-muted);
   --color-link-body: var(--link-body-color);
   --color-accent-regular: var(--accent-regular);
   --color-accent-dark: var(--accent-dark);
@@ -251,11 +239,6 @@
   padding-inline: 1.5rem;
 }
 
-.stack {
-  display: flex;
-  flex-direction: column;
-}
-
 /*
  * Short bodies rendered from markdown (content collection entries, CMS fields).
  * Their elements can't be reached with utility classes, so they're styled here.
@@ -332,7 +315,7 @@
   margin-top: 1rem;
   padding-left: 1rem;
   border-left: 3px solid var(--green-500);
-  color: var(--gray-500);
+  color: var(--text-muted);
   font-style: italic;
 }
 

@@ -7,8 +7,6 @@ export const defaultLocale: Locale = "lt";
 export const routes = {
   about: { lt: "apie-mane", en: "about" },
   psychotherapy: { lt: "psichoterapija", en: "psychotherapy" },
-  // Both the gallery and, under it, every blog post — '/lt/straipsniai-ir-video/' and
-  // '/lt/straipsniai-ir-video/<slug>/'. Posts have no section of their own.
   articles: { lt: "straipsniai-ir-video", en: "articles-and-videos" },
   creativeWork: { lt: "kuryba", en: "creative-work" },
   trainings: { lt: "mokymai", en: "trainings" },
@@ -17,19 +15,23 @@ export const routes = {
 
 export type RouteName = keyof typeof routes;
 
-/** Short label shown in the language switcher. */
-export const localeNames: Record<Locale, string> = {
-  lt: "LT",
-  en: "EN",
-};
-
 /** Lithuanian is the source of truth: it defines the key set every other locale must fill. */
 const lt = {
+  // Site
   "site.title": "Psichologė Rugilė Kazlauskienė",
   "site.description": "Asmeninis psichologės Rugilės Kazlauskienės puslapis",
-  "experience.present": "dabar",
+
+  // Navigation
   "lang.label": "Kalba",
   "lang.switch": "Perjungti į anglų kalbą",
+  "nav.home": "Pradžia",
+  "nav.psychotherapy": "Psichoterapija",
+  "nav.about": "Apie mane",
+  "nav.articles": "Straipsniai ir video",
+  "nav.creativeWork": "Kūryba",
+  "nav.trainings": "Mokymai",
+  "nav.contacts": "Kontaktai",
+  "socials.follow": "Sekite mane",
 
   "home.hero.title": "Rugilė Kazlauskienė",
   "home.hero.tagline": "Psichologė psichoterapeutė Kaune bei internetu",
@@ -43,17 +45,8 @@ const lt = {
   "home.mentions.heading": "TODO: paminėjimai",
   "home.mentions.tagline": "TODO: skilties aprašymas.",
 
-  "nav.home": "Pradžia",
-  "nav.psychotherapy": "Psichoterapija",
-  "nav.about": "Apie mane",
-  "nav.articles": "Straipsniai ir video",
-  "nav.creativeWork": "Kūryba",
-  "nav.trainings": "Mokymai",
-  "nav.contacts": "Kontaktai",
-
-  /** Label in front of the profile icons — in the nav and on "Mokymai". */
-  "socials.follow": "Sekite mane",
-
+  // About me
+  "experience.present": "dabar",
   "about.title": "Apie mane",
   "about.description":
     "Apie Rugilę Kazlauskienę — išsilavinimas, patirtis ir darbo principai.",
@@ -125,11 +118,21 @@ export type UIKey = keyof typeof lt;
 export const ui: Record<Locale, Record<UIKey, string>> = {
   lt,
   en: {
+    // Site
     "site.title": "Psychologist Rugilė Kazlauskienė",
     "site.description": "Personal website of psychologist Rugilė Kazlauskienė",
-    "experience.present": "present",
+
+    // Navigation
     "lang.label": "Language",
     "lang.switch": "Switch to Lithuanian",
+    "nav.home": "Home",
+    "nav.psychotherapy": "Psychotherapy",
+    "nav.about": "About Me",
+    "nav.articles": "Articles and Videos",
+    "nav.creativeWork": "Creative Work",
+    "nav.trainings": "Trainings",
+    "nav.contacts": "Contacts",
+    "socials.follow": "Follow me here",
 
     "home.hero.title": "Rugilė Kazlauskienė",
     "home.hero.tagline":
@@ -144,16 +147,8 @@ export const ui: Record<Locale, Record<UIKey, string>> = {
     "home.mentions.heading": "TODO: mentions",
     "home.mentions.tagline": "TODO: section description.",
 
-    "nav.home": "Home",
-    "nav.psychotherapy": "Psychotherapy",
-    "nav.about": "About Me",
-    "nav.articles": "Articles and Videos",
-    "nav.creativeWork": "Creative Work",
-    "nav.trainings": "Trainings",
-    "nav.contacts": "Contacts",
-
-    "socials.follow": "Follow me here",
-
+    // About me
+    "experience.present": "present",
     "about.title": "About Me",
     "about.description":
       "About Rugilė Kazlauskienė — education, experience and approach to work.",

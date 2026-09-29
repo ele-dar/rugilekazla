@@ -1,16 +1,15 @@
 ---
-import type { Locale } from '~/i18n/ui';
+import { defaultLocale, type Locale } from '~/i18n/ui';
 import { useTranslations, withBase } from '~/i18n/utils';
 import '../styles/global.css';
 
 interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
-	/** Defaults to 'en' so pages not yet translated keep their current behaviour. */
 	lang?: Locale | undefined;
 }
 
-const { title, description, lang = 'en' } = Astro.props;
+const { title, description, lang = defaultLocale } = Astro.props;
 const t = useTranslations(lang);
 
 /** Pages pass their own short title ('Patirtis'); the site name is appended here so every tab
@@ -31,7 +30,6 @@ const isDemo = import.meta.env.PUBLIC_DEMO === 'true';
 {isDemo && <meta name="robots" content="noindex, nofollow" />}
 <title>{pageTitle}</title>
 
-<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
 <link rel="icon" href={withBase('/favicon.ico')} />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

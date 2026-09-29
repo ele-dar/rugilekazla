@@ -2,9 +2,8 @@
 const currentYear = new Date().getFullYear();
 ---
 
-<!-- `mt-auto` is load-bearing: the layout wrapper is a `min-h-dvh` flex column, and this is
-	what pushes the footer to the bottom of the viewport on a short page. The horizontal
-	padding tracks the nav's, so the copyright lines up with the nav's right edge. -->
-<footer class="mt-auto px-6 py-10 text-right text-sm text-gray-400 md:px-16 lg:px-24">
-	<p>&copy; {currentYear} Rugilė Kazlauskienė</p>
+<footer
+  class="mt-auto px-6 py-8 text-right text-sm text-muted md:px-16 lg:px-24"
+>
+  <p>&copy; {currentYear} Rugilė Kazlauskienė</p>
 </footer>
