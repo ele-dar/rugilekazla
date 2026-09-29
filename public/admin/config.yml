@@ -4,11 +4,13 @@ backend:
 
 # Lets you run the CMS locally against the filesystem before Netlify
 # Identity/Git Gateway is configured. Run `npx decap-server` alongside
-# `astro dev` and open http://localhost:4321/admin/
+# `astro dev` and open http://localhost:4321/admin/index.html
 local_backend: true
 
-media_folder: "public/assets/uploads"
-public_folder: "/assets/uploads"
+# What the Media tab lists. Every collection uploads here too (each sets its own
+# media_folder/public_folder so image paths resolve relative to the entry file), so
+# this only needs to point at the same folder for the tab to show those images.
+media_folder: "src/assets/uploads"
 
 # Each entry is stored once per language, in a folder named after the locale:
 # src/content/experience/lt/<slug>.md and src/content/experience/en/<slug>.md.
@@ -22,18 +24,15 @@ collections:
   - name: "experience"
     label: "Experience"
     folder: "src/content/experience"
+    media_folder: "/src/assets/uploads"
+    public_folder: "../../../assets/uploads"
     create: true
     slug: "{{slug}}"
     format: "frontmatter"
     i18n: true
-    # No date sorting here on purpose: the site orders entries by start and end year
-    # together (ongoing entries first), and the CMS Sort menu can only hold one field
-    # at a time, so it could never reproduce that order.
     sortable_fields:
       - field: title
         label: "Title"
-    # Pick "Type" from the Group by menu to split the list into sections.
-    # Entries keep the selected sort order inside each section.
     view_groups:
       - label: "Type:"
         field: type
@@ -51,14 +50,14 @@ collections:
         name: "title"
         widget: "string"
         i18n: duplicate
-        hint: "Only for entry naming. Will not be visible in the website. Shared by both languages -- typing it once fills the English copy"
+        hint: "Only for entry naming. Will not be visible in the website."
       - label: "Start year"
         name: "startDate"
         widget: "string"
         i18n: duplicate
         required: false
         pattern: ['^\d{4}$', "Four digits, e.g. 2014"]
-        hint: "Four-digit year. Leave blank for entries that carry no date at all, such as memberships -- then leave the end year blank too"
+        hint: "Four-digit year. Leave blank for entries that carry no date at all (e.g. memberships), then leave the end year blank too"
       - label: "End year"
         name: "endDate"
         widget: "string"
@@ -72,59 +71,16 @@ collections:
         i18n: true
         required: false
 
-  - name: "blog"
-    label: "Blog"
-    folder: "src/content/blog"
-    # Same as the psychotherapy collection below: images inserted into the body
-    # land in src/ so Astro optimises them, and the path written into the markdown
-    # is relative to the entry file. Blog entries sit at the same depth, so the
-    # same three levels up apply.
-    media_folder: "/src/assets/uploads"
-    public_folder: "../../../assets/uploads"
-    create: true
-    slug: "{{slug}}"
-    format: "frontmatter"
-    i18n: true
-    fields:
-      - label: "Title"
-        name: "title"
-        widget: "string"
-        i18n: true
-      - label: "Description"
-        name: "description"
-        widget: "text"
-        i18n: true
-        hint: "Not shown on the site. Used as the page's meta description -- the grey summary Google shows under the link, and the preview text when the post is shared. One or two plain sentences, up to about 150 characters"
-      - label: "Publish Date"
-        name: "publishDate"
-        widget: "datetime"
-        i18n: duplicate
-      - label: "Featured image"
-        name: "featuredImage"
-        widget: "image"
-        i18n: duplicate
-        required: false
-        hint: "Shown as the banner across the top of the post, and on its card on the Articles and Videos page. Without one the post has no banner and the card shows a placeholder. Shared by both languages"
-      - label: "Body"
-        name: "body"
-        widget: "markdown"
-        i18n: true
-
   - name: "psychotherapy"
     label: "Psychotherapy"
     folder: "src/content/psychotherapy"
     # Uploads live in src/ rather than public/ so that Astro optimises them
-    # (resizing, WebP, hashed filenames). The leading slash means "from the repo
-    # root"; public_folder is written into the entry instead, relative to the
-    # markdown file, which is the only form Astro's `image()` helper resolves.
     media_folder: "/src/assets/uploads"
     public_folder: "../../../assets/uploads"
     create: true
     slug: "{{slug}}"
     format: "frontmatter"
     i18n: true
-    # The entry list opens sorted by Order, so it matches the website. Only one
-    # sortable field may carry `default_sort`.
     sortable_fields:
       - field: order
         label: "Order"
@@ -142,7 +98,7 @@ collections:
         value_type: "int"
         min: 1
         i18n: duplicate
-        hint: "Position on the Psychotherapy page, lowest first. Shared by both languages, so the two lists stay in the same order"
+        hint: "Position on the Psychotherapy page, lowest first."
       - label: "Intro"
         name: "intro"
         widget: "markdown"
@@ -152,12 +108,11 @@ collections:
         minimal: true
         buttons: ["bold", "italic", "link", "bulleted-list", "numbered-list"]
         editor_components: []
-        hint: "Short lead-in shown above the body. Bold, italics, links and lists work here; put a blank line between paragraphs"
+        hint: "Short intro displayed above the body."
       - label: "Featured image"
         name: "featuredImage"
         widget: "image"
         i18n: duplicate
-        hint: "Shared by both languages -- uploading it once fills the English copy"
       - label: "Body"
         name: "body"
         widget: "markdown"
@@ -186,22 +141,19 @@ collections:
   - name: "media"
     label: "Media"
     folder: "src/content/media"
-    # Same as the collections above: uploads land in src/ so Astro optimises them,
-    # and the path written into the entry is relative to the markdown file.
+    # Uploads live in src/ rather than public/ so that Astro optimises them
     media_folder: "/src/assets/uploads"
     public_folder: "../../../assets/uploads"
     create: true
     slug: "{{slug}}"
     format: "frontmatter"
     i18n: true
-    # The list opens newest first, like the gallery on the website.
     sortable_fields:
       - field: publishDate
         label: "Publish date"
         default_sort: "desc"
       - field: title
         label: "Title"
-    # Pick "Type" from the Group by menu to split the list into sections.
     view_groups:
       - label: "Type:"
         field: type
@@ -217,30 +169,65 @@ collections:
         name: "title"
         widget: "string"
         i18n: true
-        hint: "Shown on the card"
       - label: "Source"
         name: "source"
         widget: "string"
         i18n: true
         required: false
-        hint: "Optional. Who published it -- the outlet, channel or show, e.g. 15min.lt or LRT. Shown on the card above the date. Shared by both languages"
       - label: "Publish date"
         name: "publishDate"
         widget: "datetime"
+        time_format: false
+        date_format: "YYYY-MM-DD"
+        format: "YYYY-MM-DD"
         i18n: duplicate
-        hint: "When it was published. The gallery lists everything newest first"
+        hint: "The gallery lists entries newest first"
       - label: "Link"
         name: "link"
         widget: "string"
         i18n: duplicate
         pattern: ["^https?://", "Start with https://"]
-        hint: "The full address, e.g. https://www.youtube.com/watch?v=... -- it opens in a new tab"
       - label: "Featured image"
         name: "featuredImage"
         widget: "image"
         i18n: duplicate
         required: false
-        hint: "Optional. Without one the card shows a placeholder drawn for its type -- a page, a screen or a microphone. Shared by both languages"
+        hint: "If not provided, the card shows a placeholder for its type (a page or a screen)."
+
+  - name: "blog"
+    label: "Blog"
+    folder: "src/content/blog"
+    # Uploads live in src/ rather than public/ so that Astro optimises them
+    media_folder: "/src/assets/uploads"
+    public_folder: "../../../assets/uploads"
+    create: true
+    slug: "{{slug}}"
+    format: "frontmatter"
+    i18n: true
+    fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        i18n: true
+      - label: "Description"
+        name: "description"
+        widget: "text"
+        i18n: true
+        hint: "Not shown on the site. Used as the page's meta description (the grey summary Google shows under the link, and the preview text when the post is shared). One or two plain sentences, up to about 150 characters"
+      - label: "Publish Date"
+        name: "publishDate"
+        widget: "datetime"
+        i18n: duplicate
+      - label: "Featured image"
+        name: "featuredImage"
+        widget: "image"
+        i18n: duplicate
+        required: false
+        hint: "Shown as the banner across the top of the post, and on its card on the Articles and Videos page. Without one the post has no banner and the card shows a placeholder image."
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        i18n: true
 
   # The next two are pages rather than lists of things: exactly one entry each, whose title
   # is the page heading and whose body is the page. The site reads each at a fixed path, so
@@ -250,8 +237,7 @@ collections:
     label: "Creative Work page"
     label_singular: "Creative Work page"
     folder: "src/content/creative-work"
-    # Same as the collections above: body images land in src/ so Astro optimises them,
-    # and the path written into the entry is relative to the markdown file.
+    # Uploads live in src/ rather than public/ so that Astro optimises them
     media_folder: "/src/assets/uploads"
     public_folder: "../../../assets/uploads"
     create: false
@@ -291,4 +277,3 @@ collections:
         name: "body"
         widget: "markdown"
         i18n: true
-        hint: "The whole page. Internal links start with a slash, e.g. /lt/kontaktai/ -- external ones with https://"
