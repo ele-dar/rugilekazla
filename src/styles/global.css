@@ -218,27 +218,6 @@
   }
 }
 
-/* Utilities */
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-.wrapper {
-  width: 100%;
-  max-width: 83rem;
-  margin-inline: auto;
-  padding-inline: 1.5rem;
-}
-
 /*
  * Short bodies rendered from markdown (content collection entries, CMS fields).
  * Their elements can't be reached with utility classes, so they're styled here.

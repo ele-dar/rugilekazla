@@ -22,10 +22,6 @@ const flags: Record<Locale, 'lt' | 'gb'> = {
 /** With only two locales, the switcher is a single link to "the other" one. */
 const other = locales.find((locale) => locale !== current)!;
 
-/** Padding sits on the link and the circle on a wrapper inside it: putting both on one
- *  element would make `rounded-full` clip the padded box instead of the flag. The value is
- *  the same `--icon-padding` the social links use, inherited from `.menu-footer` in
- *  Nav.astro, so the two stay in step; the fallback covers use outside that container. */
 const linkClass = 'group flex p-[var(--icon-padding,0.5rem)]';
 
 const flagClass =

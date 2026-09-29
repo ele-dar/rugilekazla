@@ -1,0 +1,36 @@
+---
+interface Props {
+  href: string;
+  /** Marks the link as the page being viewed (`aria-current="page"`). */
+  current: boolean;
+  /**
+   * - `bar`: desktop menu item — the current page gets a filled pill.
+   * - `dropdown`: desktop submenu item — same pill, block-level and never wrapping.
+   * - `sheet`: mobile menu item — no pill, the current page is marked by colour alone.
+   * - `sheet-child`: mobile submenu item — smaller and dimmer, so it reads as subordinate.
+   */
+  variant: "bar" | "dropdown" | "sheet" | "sheet-child";
+}
+
+const { href, current, variant } = Astro.props;
+
+const pill = "aria-[current=page]:bg-green-800 aria-[current=page]:text-gray-0";
+const text = "aria-[current=page]:text-green-800";
+
+/** Each variant owns its size and colour, so none of them has to override another's. */
+const variants = {
+  bar: `inline-block py-1.5 text-sm text-gray-700 ${pill}`,
+  dropdown: `block py-1.5 text-sm whitespace-nowrap text-gray-700 ${pill}`,
+  sheet: `py-1.5 text-sm text-gray-700 ${text}`,
+  "sheet-child": `block py-1 text-xs text-muted ${text}`,
+};
+---
+
+<a
+  href={href}
+  aria-current={current ? "page" : null}
+  class:list={[
+    "rounded-full px-3 no-underline transition-colors duration-200 ease-in-out hover:text-green-800 active:text-green-500 aria-[current=page]:forced-colors:text-[SelectedItem]",
+    variants[variant],
+  ]}><slot /></a
+>

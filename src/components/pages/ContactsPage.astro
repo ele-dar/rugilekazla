@@ -6,7 +6,7 @@ import { contactDetails, isPlaceholder } from '~/contacts';
 import type { Locale } from '~/i18n/ui';
 import { alternateUrls, useTranslations } from '~/i18n/utils';
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import { socialLinks } from '~/socials';
+import SocialLinks from '~/components/SocialLinks.astro';
 
 interface Props {
 	lang: Locale;
@@ -90,24 +90,7 @@ const details: { icon: keyof typeof iconPaths; label: string; value: string; hre
 				<div class="flex flex-col gap-3 border-t border-gray-100 pt-6">
 					<span class="text-sm font-medium text-muted">{t('socials.follow')}</span>
 
-					<!-- Same pills as the closing band on "Mokymai", so the two read alike. -->
-					<ul class="m-0 flex list-none gap-2 p-0">
-						{
-							socialLinks.map(({ href, icon, label }) => (
-								<li>
-									<a
-										href={href}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="flex size-10 items-center justify-center rounded-full bg-yellow-500 text-gray-700 no-underline shadow-md transition duration-200 ease-in-out hover:bg-yellow-700 hover:shadow-lg"
-									>
-										<span class="sr-only">{label}</span>
-										<Icon icon={icon} size="1.15rem" />
-									</a>
-								</li>
-							))
-						}
-					</ul>
+					<SocialLinks variant="pill" />
 				</div>
 			</div>
 			<iframe

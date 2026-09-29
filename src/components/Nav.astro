@@ -1,308 +1,262 @@
 ---
-import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
-import { type Locale } from '~/i18n/ui';
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import { type Locale } from "~/i18n/ui";
 import {
-	entriesForLocale,
-	localizedPath,
-	localizedPostPath,
-	slugify,
-	useTranslations,
-	withBase,
-} from '~/i18n/utils';
-import Icon from './Icon.astro';
-import LanguageSwitcher from './LanguageSwitcher.astro';
-import { socialLinks } from '~/socials';
-import logo from '~/assets/logo.jpeg';
+  entriesForLocale,
+  localizedPath,
+  localizedPostPath,
+  slugify,
+  useTranslations,
+  withBase,
+} from "~/i18n/utils";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import NavLink from "./NavLink.astro";
+import SocialLinks from "./SocialLinks.astro";
+import logo from "~/assets/logo.jpeg";
 
 interface Props {
-	/** Locale of the page this nav is rendered on. */
-	lang: Locale;
-	/** This page's URL in every locale. Omitted on pages that aren't translated yet. */
-	alternates?: Record<Locale, string> | undefined;
+  /** Locale of the page this nav is rendered on. */
+  lang: Locale;
+  /** This page's URL in every locale. */
+  alternates?: Record<Locale, string> | undefined;
+}
+
+interface NavLink {
+  label: string;
+  href: string;
 }
 
 const { lang, alternates } = Astro.props;
 const t = useTranslations(lang);
 
 /** Home lives at '/' for the default locale and '/en/' for English — see HomePage.astro. */
-const homeHrefs = { lt: withBase('/'), en: withBase('/en/') } satisfies Record<Locale, string>;
+const homeHrefs = { lt: withBase("/"), en: withBase("/en/") } satisfies Record<
+  Locale,
+  string
+>;
 
 /** Each service gets a submenu entry under Psychotherapy, in the order set in the CMS. */
-const services = entriesForLocale(await getCollection('psychotherapy'), lang)
-	.sort((a, b) => a.data.order - b.data.order)
-	.map((service) => ({
-		label: service.data.title,
-		href: localizedPostPath('psychotherapy', lang, slugify(service.data.title)),
-	}));
-
-interface NavLink {
-	label: string;
-	href: string;
-}
+const services = entriesForLocale(await getCollection("psychotherapy"), lang)
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((service) => ({
+    label: service.data.title,
+    href: localizedPostPath("psychotherapy", lang, slugify(service.data.title)),
+  }));
 
 /** Main menu items. A `children` list renders as a dropdown from that item. */
 const textLinks: (NavLink & { children?: NavLink[] })[] = [
-	{ label: t('nav.home'), href: homeHrefs[lang] },
-	{
-		label: t('nav.psychotherapy'),
-		href: localizedPath('psychotherapy', lang),
-		children: services,
-	},
-	{ label: t('nav.about'), href: localizedPath('about', lang) },
-	{ label: t('nav.articles'), href: localizedPath('articles', lang) },
-	{ label: t('nav.creativeWork'), href: localizedPath('creativeWork', lang) },
-	{ label: t('nav.trainings'), href: localizedPath('trainings', lang) },
-	{ label: t('nav.contacts'), href: localizedPath('contacts', lang) },
+  { label: t("nav.home"), href: homeHrefs[lang] },
+  {
+    label: t("nav.psychotherapy"),
+    href: localizedPath("psychotherapy", lang),
+    children: services,
+  },
+  { label: t("nav.about"), href: localizedPath("about", lang) },
+  { label: t("nav.articles"), href: localizedPath("articles", lang) },
+  { label: t("nav.creativeWork"), href: localizedPath("creativeWork", lang) },
+  { label: t("nav.trainings"), href: localizedPath("trainings", lang) },
+  { label: t("nav.contacts"), href: localizedPath("contacts", lang) },
 ];
 
 /** Test if a link is pointing to the current page. */
-const isCurrentPage = (href: string) => {
-	let pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
-	if (pathname.at(0) !== '/') pathname = '/' + pathname;
-	if (pathname.at(-1) !== '/') pathname += '/';
-	// Home's hrefs ('/', '/en/') are prefixes of every other page in their locale, so they
-	// only ever match exactly — otherwise Home would show as "current" on every page.
-	if (Object.values(homeHrefs).includes(href)) return pathname === href;
-	return pathname === href || pathname.startsWith(href);
-};
+const pathname = Astro.url.pathname.replace(/\/?$/, "/");
+// Home's hrefs ('/', '/en/') are prefixes of every other page in their locale, so they
+// only ever match exactly — otherwise Home would show as "current" on every page.
+const isCurrentPage = (href: string) =>
+  Object.values(homeHrefs).includes(href)
+    ? pathname === href
+    : pathname.startsWith(href);
 
-/** Desktop nav items — background pill: accent-dark for the current page, accent-regular on hover. */
-const desktopLinkClass =
-	'inline-block rounded-full px-3 py-1.5 text-sm text-gray-700 no-underline transition-colors duration-200 ease-in-out ' +
-	'hover:text-green-800 active:text-green-500 ' +
-	'aria-[current=page]:bg-green-800 aria-[current=page]:text-gray-0 ' +
-	'aria-[current=page]:forced-colors:text-[SelectedItem]';
-
-/** Mobile dropdown nav items — no pill, just text color: accent-dark current, accent-regular on hover. */
-const mobileLinkClass =
-	'rounded-full px-3 py-1.5 text-sm text-gray-700 no-underline transition-colors duration-200 ease-in-out ' +
-	'hover:text-green-800 active:text-green-500 ' +
-	'aria-[current=page]:text-green-800 ' +
-	'aria-[current=page]:forced-colors:text-[SelectedItem]';
-
-/** Dropdown items: same colours as the desktop menu, but block-level and never wrapping. */
-const dropdownLinkClass =
-	'block rounded-full px-3 py-1.5 text-sm whitespace-nowrap text-gray-700 no-underline transition-colors duration-200 ease-in-out ' +
-	'hover:text-green-800 active:text-green-500 ' +
-	'aria-[current=page]:bg-green-800 aria-[current=page]:text-gray-0 ' +
-	'aria-[current=page]:forced-colors:text-[SelectedItem]';
-
-/** Submenu items in the mobile sheet — smaller and dimmer, so they read as subordinate. */
-const mobileChildLinkClass =
-	'block rounded-full px-3 py-1 text-xs text-muted no-underline transition-colors duration-200 ease-in-out ' +
-	'hover:text-green-800 active:text-green-500 ' +
-	'aria-[current=page]:text-green-800 ' +
-	'aria-[current=page]:forced-colors:text-[SelectedItem]';
-
-const menuFooterClass = 'menu-footer [--icon-size:1.5rem] [--icon-padding:0.5rem] flex items-center gap-2 ';
-
-const socialsClass = 'socials flex flex-wrap gap-2 text-[length:var(--icon-size)]';
-
-const socialClass =
-	'social flex p-2 no-underline text-gray-700 transition-colors duration-200 ease-in-out ' +
-	'hover:text-green-800 active:text-green-500';
+const menuFooterClass =
+  "menu-footer [--icon-size:1.5rem] [--icon-padding:0.5rem] flex items-center gap-2 ";
 
 /** One 1px bar of the hamburger icon; morphs into an X via `group-aria-expanded:*` on the button. */
 const hamburgerBarClass =
-	'block h-0.5 w-6 bg-gray-300 transition duration-200 ease-in-out ' +
-	'group-hover:bg-green-800 group-active:bg-green-500';
+  "block h-0.5 w-6 bg-gray-300 transition duration-200 ease-in-out " +
+  "group-hover:bg-green-800 group-active:bg-green-500";
 ---
 
-<nav class="relative flex items-center justify-between bg-green-200 px-6 md:px-16 lg:px-24 py-4 font-medium ">
-	<!-- Desktop menu left -->
-	<div class="flex items-center gap-5">
-		<a href={homeHrefs[lang]} class="site-title flex items-center text-gray-0 no-underline">
-			<Image
-				src={logo}
-				alt="Logo"
-				width={64}
-				height={64}
-				densities={[1, 2]}
-				loading="eager"
-				fetchpriority="high"
-				class="block h-16 w-16 rounded-full object-cover"
-			/>
-		</a>
+<nav
+  class="relative flex items-center justify-between bg-green-200 px-6 py-4 font-medium xl:px-24"
+>
+  <!-- Desktop menu left -->
+  <div class="flex items-center gap-5">
+    <a href={homeHrefs[lang]}>
+      <Image
+        src={logo}
+        alt={t("site.title")}
+        width={64}
+        height={64}
+        densities={[1, 2]}
+        loading="eager"
+        fetchpriority="high"
+        class="block h-16 w-16 rounded-full object-cover"
+      />
+    </a>
 
-		<ul class="m-0 hidden list-none items-center gap-5 xl:flex">
-			{
-				textLinks.map(({ label, href, children }) => (
-					<li class="group relative">
-						<a aria-current={isCurrentPage(href) ? 'page' : null} class={desktopLinkClass} href={href}>
-							{label}
-							{children && children.length > 0 && (
-								<svg
-									class="ml-1 inline-block align-middle transition-transform duration-200 ease-in-out group-hover:rotate-180 group-focus-within:rotate-180"
-									width="10"
-									height="10"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="3"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									aria-hidden="true"
-								>
-									<path d="m6 9 6 6 6-6" />
-								</svg>
-							)}
-						</a>
+    <ul class="m-0 hidden list-none items-center gap-5 xl:flex">
+      {
+        textLinks.map(({ label, href, children }) => (
+          <li class="group relative">
+            <NavLink href={href} current={isCurrentPage(href)} variant="bar">
+              {label}
+              {children && children.length > 0 && (
+                <svg
+                  class="ml-1 inline-block align-middle transition-transform duration-200 ease-in-out group-focus-within:rotate-180 group-hover:rotate-180"
+                  width="10"
+                  height="10"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              )}
+            </NavLink>
 
-						{/* Opens on hover and on keyboard focus. The wrapper starts at the pill's
-							bottom edge; its transparent `pt-2` lowers the panel while keeping the
-							hover area continuous, so the pointer never crosses a dead gap. */}
-						{children && children.length > 0 && (
-							<div class="invisible absolute top-full left-0 z-50 w-max min-w-full pt-2 opacity-0 transition-opacity duration-200 ease-in-out group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-							<ul class="m-0 flex w-full list-none flex-col gap-1 rounded-2xl bg-green-200 p-2 shadow-md">
-								{children.map((child) => (
-									<li>
-										<a
-											aria-current={isCurrentPage(child.href) ? 'page' : null}
-											class={dropdownLinkClass}
-											href={child.href}
-										>
-											{child.label}
-										</a>
-									</li>
-								))}
-							</ul>
-							</div>
-						)}
-					</li>
-				))
-			}
-		</ul>
-	</div>
+            {/* Opens on hover and on keyboard focus */}
+            {children && children.length > 0 && (
+              <div class="invisible absolute top-full left-0 z-50 w-max min-w-full pt-2 opacity-0 transition-opacity duration-200 ease-in-out group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                <ul class="m-0 flex w-full list-none flex-col gap-1 rounded-2xl bg-green-200 p-2 shadow-md">
+                  {children.map((child) => (
+                    <li>
+                      <NavLink
+                        href={child.href}
+                        current={isCurrentPage(child.href)}
+                        variant="dropdown"
+                      >
+                        {child.label}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 
-	<!-- Desktop menu right -->
-	<div class={`hidden xl:flex ${menuFooterClass}`}>
-		<div class={socialsClass}>
-			{
-				socialLinks.map(({ href, icon, label }) => (
-					<a href={href} target="_blank" rel="noopener noreferrer" class={socialClass}>
-						<span class="sr-only">{label}</span>
-						<Icon icon={icon} />
-					</a>
-				))
-			}
-		</div>
+  <!-- Desktop menu right -->
+  <div class={`hidden xl:flex ${menuFooterClass}`}>
+    <SocialLinks variant="plain" />
 
-		{alternates && <LanguageSwitcher current={lang} hrefs={alternates} />}
-	</div>
+    {alternates && <LanguageSwitcher current={lang} hrefs={alternates} />}
+  </div>
 
-	<button
-		id="menu-toggle"
-		type="button"
-		class="group flex flex-col gap-1.5 border-0 bg-transparent p-1 cursor-pointer xl:hidden"
-		aria-controls="mobile-menu"
-		aria-expanded="false"
-	>
-		<span class="sr-only">Menu</span>
-		<span class={`${hamburgerBarClass} group-aria-expanded:translate-y-2 group-aria-expanded:rotate-45`} />
-		<span class={`${hamburgerBarClass} group-aria-expanded:opacity-0`} />
-		<span class={`${hamburgerBarClass} group-aria-expanded:-translate-y-2 group-aria-expanded:-rotate-45`} />
-	</button>
+  <button
+    id="menu-toggle"
+    type="button"
+    class="group flex cursor-pointer flex-col gap-1.5 border-0 bg-transparent p-1 xl:hidden"
+    aria-controls="mobile-menu"
+    aria-expanded="false"
+  >
+    <span class="sr-only">Menu</span>
+    <span
+      class={`${hamburgerBarClass} group-aria-expanded:translate-y-2 group-aria-expanded:rotate-45`}
+    ></span>
+    <span class={`${hamburgerBarClass} group-aria-expanded:opacity-0`}></span>
+    <span
+      class={`${hamburgerBarClass} group-aria-expanded:-translate-y-2 group-aria-expanded:-rotate-45`}
+    ></span>
+  </button>
 
-	<!-- For browsers without JS. TO-DO check functionality -->
-	<noscript>
-		<div class="absolute inset-x-0 top-full z-50 flex flex-col gap-1 border-t border-gray-800 bg-green-200 p-5 xl:hidden">
-			<ul class="m-0 flex list-none flex-col gap-1 p-0">
-				{
-					textLinks.map(({ label, href, children }) => (
-						<li>
-							<a aria-current={isCurrentPage(href) ? 'page' : null} class={mobileLinkClass} href={href}>
-								{label}
-							</a>
-							{children && children.length > 0 && (
-								<ul class="m-0 flex list-none flex-col gap-0.5 p-0 pr-3">
-									{children.map((child) => (
-										<li>
-											<a
-												aria-current={isCurrentPage(child.href) ? 'page' : null}
-												class={mobileChildLinkClass}
-												href={child.href}
-											>
-												{child.label}
-											</a>
-										</li>
-									))}
-								</ul>
-							)}
-						</li>
-					))
-				}
-			</ul>
-			<div class={`${menuFooterClass} mt-2 px-4`}>
-				<div class={socialsClass}>
-					{
-						socialLinks.map(({ href, icon, label }) => (
-							<a href={href} target="_blank" rel="noopener noreferrer" class={socialClass}>
-								<span class="sr-only">{label}</span>
-								<Icon icon={icon} />
-							</a>
-						))
-					}
-				</div>
+  <!-- Mobile menu -->
+  <div
+    id="mobile-menu"
+    class="absolute inset-x-0 top-full z-50 hidden flex-col gap-1 bg-green-200 p-5 pt-0 text-right drop-shadow-lg drop-shadow-green-200 xl:hidden"
+  >
+    <ul class="flex list-none flex-col gap-1 p-0">
+      {
+        textLinks.map(({ label, href, children }) => (
+          <li>
+            <NavLink href={href} current={isCurrentPage(href)} variant="sheet">
+              {label}
+            </NavLink>
+            {children && children.length > 0 && (
+              <ul class="m-0 flex list-none flex-col gap-0.5 p-0 pr-3">
+                {children.map((child) => (
+                  <li>
+                    <NavLink
+                      href={child.href}
+                      current={isCurrentPage(child.href)}
+                      variant="sheet-child"
+                    >
+                      {child.label}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+    <div class={`${menuFooterClass} mt-2 ml-auto px-4 `}>
+      <SocialLinks variant="plain" />
 
-				{alternates && <LanguageSwitcher current={lang} hrefs={alternates} />}
-			</div>
-		</div>
-	</noscript>
+      {alternates && <LanguageSwitcher current={lang} hrefs={alternates} />}
+    </div>
+  </div>
 
-	<!-- Mobile menu -->
-	<div id="mobile-menu" class="absolute inset-x-0 top-full z-50 hidden flex-col gap-1 bg-green-200 p-5 text-right drop-shadow-lg drop-shadow-green-200 xl:hidden">
-		<ul class="flex list-none flex-col gap-1 p-0">
-			{
-				textLinks.map(({ label, href, children }) => (
-					<li>
-						<a aria-current={isCurrentPage(href) ? 'page' : null} class={mobileLinkClass} href={href}>
-							{label}
-						</a>
-						{children && children.length > 0 && (
-							<ul class="m-0 flex list-none flex-col gap-0.5 p-0 pr-3">
-								{children.map((child) => (
-									<li>
-										<a
-											aria-current={isCurrentPage(child.href) ? 'page' : null}
-											class={mobileChildLinkClass}
-											href={child.href}
-										>
-											{child.label}
-										</a>
-									</li>
-								))}
-							</ul>
-						)}
-					</li>
-				))
-			}
-		</ul>
-		<div class={`${menuFooterClass} mt-2 ml-auto px-4 `}>
-			<div class={socialsClass}>
-				{
-					socialLinks.map(({ href, icon, label }) => (
-						<a href={href} target="_blank" rel="noopener noreferrer" class={socialClass}>
-							<span class="sr-only">{label}</span>
-							<Icon icon={icon} />
-						</a>
-					))
-				}
-			</div>
+   <!-- For browsers without JS. TO-DO check functionality -->
+  <noscript>
+    <div
+      class="absolute inset-x-0 top-full z-50 flex flex-col gap-1 border-t border-gray-800 bg-green-200 p-5 xl:hidden"
+    >
+      <ul class="m-0 flex list-none flex-col gap-1 p-0">
+        {
+          textLinks.map(({ label, href, children }) => (
+            <li>
+              <NavLink
+                href={href}
+                current={isCurrentPage(href)}
+                variant="sheet"
+              >
+                {label}
+              </NavLink>
+              {children && children.length > 0 && (
+                <ul class="m-0 flex list-none flex-col gap-0.5 p-0 pr-3">
+                  {children.map((child) => (
+                    <li>
+                      <NavLink
+                        href={child.href}
+                        current={isCurrentPage(child.href)}
+                        variant="sheet-child"
+                      >
+                        {child.label}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+      <div class={`${menuFooterClass} mt-2 px-4`}>
+        <SocialLinks variant="plain" />
 
-			{alternates && <LanguageSwitcher current={lang} hrefs={alternates} />}
-		</div>
-	</div>
+        {alternates && <LanguageSwitcher current={lang} hrefs={alternates} />}
+      </div>
+    </div>
+  </noscript>
 </nav>
 
 <script>
-	const btn = document.getElementById('menu-toggle')!;
-	const menu = document.getElementById('mobile-menu')!;
+  const btn = document.getElementById("menu-toggle")!;
+  const menu = document.getElementById("mobile-menu")!;
 
-	btn.addEventListener('click', () => {
-		const expanded = btn.getAttribute('aria-expanded') === 'true';
-		btn.setAttribute('aria-expanded', String(!expanded));
-		menu.classList.toggle('hidden', expanded);
-		menu.classList.toggle('flex', !expanded);
-	});
+  btn.addEventListener("click", () => {
+    const expanded = btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-expanded", String(!expanded));
+    menu.classList.toggle("hidden", expanded);
+    menu.classList.toggle("flex", !expanded);
+  });
 </script>
