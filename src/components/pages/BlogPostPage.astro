@@ -1,20 +1,20 @@
 ---
-import { Image } from 'astro:assets';
-import { type CollectionEntry, render } from 'astro:content';
-import Icon from '~/components/Icon.astro';
-import type { Locale } from '~/i18n/ui';
+import { Image } from "astro:assets";
+import { type CollectionEntry, render } from "astro:content";
+import Icon from "~/components/Icon.astro";
+import type { Locale } from "~/i18n/ui";
 import {
-	alternatePostUrls,
-	fileSlugForLocale,
-	localizedPath,
-	slugify,
-	useTranslations,
-} from '~/i18n/utils';
-import BaseLayout from '~/layouts/BaseLayout.astro';
+  alternatePostUrls,
+  fileSlugForLocale,
+  localizedPath,
+  slugify,
+  useTranslations,
+} from "~/i18n/utils";
+import BaseLayout from "~/layouts/BaseLayout.astro";
 
 interface Props {
-	lang: Locale;
-	post: CollectionEntry<'blog'>;
+  lang: Locale;
+  post: CollectionEntry<"blog">;
 }
 
 const { lang, post } = Astro.props;
@@ -24,67 +24,72 @@ const { Content } = await render(post);
 // The CMS filename pairs this post with its translation; the public URL slug is the
 // translated title instead, so each locale gets its own slug automatically.
 const alternates = await alternatePostUrls(
-	'blog',
-	'articles',
-	fileSlugForLocale(post.id, lang),
-	(sibling) => slugify(sibling.data.title)
+  "blog",
+  "articles",
+  fileSlugForLocale(post.id, lang),
+  (sibling) => slugify(sibling.data.title),
 );
 
 const date = post.data.publishDate.toLocaleDateString(lang, {
-	year: 'numeric',
-	month: 'long',
-	day: 'numeric',
+  year: "numeric",
+  month: "long",
+  day: "numeric",
 });
 ---
 
 <BaseLayout
-	title={post.data.title}
-	description={post.data.description}
-	lang={lang}
-	alternates={alternates}
+  title={post.data.title}
+  description={post.data.description}
+  lang={lang}
+  alternates={alternates}
 >
-	<!-- Full-bleed banner, like a psychotherapy entry: a direct child of the layout's
+  <!-- Full-bleed banner, like a psychotherapy entry: a direct child of the layout's
 		column, so it escapes the <main> wrapper's max width and runs edge to edge under
 		the nav. Decorative, so the fixed height crops the photo rather than letting its
 		own ratio drive the layout. Optional here, unlike psychotherapy — a post without
 		one simply starts at the back-link. -->
-	{
-		post.data.featuredImage && (
-			<Image
-				src={post.data.featuredImage}
-				alt=""
-				width={1024}
-				height={256}
-				loading="eager"
-				fetchpriority="high"
-				class="h-40 w-full object-cover lg:h-52"
-			/>
-		)
-	}
+  {
+    post.data.featuredImage && (
+      <Image
+        src={post.data.featuredImage}
+        alt=""
+        width={1024}
+        height={256}
+        loading="eager"
+        fetchpriority="high"
+        class="h-40 w-full object-cover lg:h-52"
+      />
+    )
+  }
 
-	<main class="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 py-10 lg:gap-10 lg:py-14">
-		<!-- Posts have no index of their own: the gallery on "Straipsniai ir video" is
+  <main
+    class="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 py-10 lg:gap-10 lg:py-14"
+  >
+    <!-- Posts have no index of their own: the gallery on "Straipsniai ir video" is
 		     where they are listed, so that is what a post goes back to. -->
-		<a
-			href={localizedPath('articles', lang)}
-			class="flex w-fit items-center gap-2 text-sm font-medium text-muted no-underline transition-colors duration-200 ease-in-out hover:text-green-800"
-		>
-			<Icon icon="arrow-left" size="1rem" />
-			{t('articles.heading')}
-		</a>
+    <a
+      href={localizedPath("articles", lang)}
+      class="flex w-fit items-center gap-2 text-sm font-medium text-muted no-underline transition-colors hover:text-green-800"
+    >
+      <Icon icon="arrow-left" size="1rem" />
+      {t("articles.heading")}
+    </a>
 
-		<header class="flex flex-col gap-4">
-			<h1 class="text-3xl font-bold tracking-tight text-green-800 lg:text-4xl">
-				{post.data.title}
-			</h1>
+    <header class="flex flex-col gap-4">
+      <h1 class="text-3xl font-bold tracking-tight text-green-800 lg:text-4xl">
+        {post.data.title}
+      </h1>
 
-			<time datetime={post.data.publishDate.toISOString()} class="text-sm text-muted">
-				{date}
-			</time>
-		</header>
+      <time
+        datetime={post.data.publishDate.toISOString()}
+        class="text-sm text-muted"
+      >
+        {date}
+      </time>
+    </header>
 
-		<div class="entry-body max-w-[65ch] text-base text-gray-700">
-			<Content />
-		</div>
-	</main>
+    <div class="entry-body max-w-[65ch] text-base text-gray-700">
+      <Content />
+    </div>
+  </main>
 </BaseLayout>

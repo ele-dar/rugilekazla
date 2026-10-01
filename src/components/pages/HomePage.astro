@@ -76,7 +76,7 @@ const heroLinks: {
                 class="group mx-auto flex w-fit items-center gap-4 no-underline lg:mx-0"
               >
                 <span
-                  class="flex size-12 items-center justify-center rounded-full bg-yellow-500 text-gray-700 transition-colors duration-200 ease-in-out group-hover:bg-yellow-700"
+                  class="flex size-12 items-center justify-center rounded-full bg-yellow-500 text-gray-700 transition-colors group-hover:bg-yellow-700"
                 >
                   <Icon icon="phone" size="1.25rem" />
                 </span>
@@ -115,15 +115,19 @@ const heroLinks: {
                 >
                   <span
                     class:list={[
-                      "flex size-10 shrink-0 items-center justify-center rounded-full transition-colors duration-200 ease-in-out",
+                      "flex size-10 shrink-0 items-center justify-center rounded-full transition-colors",
                       tone === "green"
                         ? "bg-green-200 group-hover:bg-green-500"
                         : "bg-yellow-200 group-hover:bg-yellow-500",
                     ]}
                   >
-                    <Icon icon={icon} size="1.125rem" color="var(--gray-600)" />
+                    <Icon
+                      icon={icon}
+                      size="1.125rem"
+                      color="var(--color-gray-600)"
+                    />
                   </span>
-                  <span class="text-md font-medium text-gray-700 transition-colors duration-200 ease-in-out group-hover:text-green-800">
+                  <span class="text-md font-medium text-gray-700 transition-colors group-hover:text-green-800">
                     {label}
                   </span>
                   <svg
@@ -132,7 +136,7 @@ const heroLinks: {
                     width="16"
                     height="16"
                     fill="none"
-                    stroke="var(--gray-300)"
+                    stroke="var(--color-gray-300)"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"

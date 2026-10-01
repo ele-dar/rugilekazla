@@ -1,70 +1,47 @@
 @import "tailwindcss";
 
-/* https://colorffy.com/color-scheme-generator?color=%237f985d */
+@theme static {
+  /* Only the site's own colours exist — Tailwind's default palette is cleared, so a class
+     like `text-gray-50` can't quietly fall back to Tailwind's grey of the same name.
+     Palette built around the brand green:
+     https://colorffy.com/color-scheme-generator?color=%237f985d */
+  --color-*: initial;
 
-/* Global variables */
-:root {
-  /* Colors */
-  --gray-0: #f3f4f7;
-  --gray-50: #e3e6ee;
-  --gray-100: rgb(195, 202, 219);
-  --gray-200: #a3acc8;
-  --gray-300: #8490b5;
-  --gray-400: #6474a2;
-  --gray-500: #505d84;
-  --gray-600: #3d4663;
-  --gray-700: #283044;
-  --gray-800: #141925;
-  --gray-900: #090b11;
+  --color-white: #fff;
 
-  --green-50: #fbfcfa;
-  --green-200: #e9ede3;
-  --green-500: #becaab;
-  --green-700: #94a977;
-  --green-800: #7f985d;
+  --color-gray-0: #f3f4f7;
+  --color-gray-50: #e3e6ee;
+  --color-gray-100: #c3cadb;
+  --color-gray-200: #a3acc8;
+  --color-gray-300: #8490b5;
+  --color-gray-400: #6474a2;
+  --color-gray-500: #505d84;
+  --color-gray-600: #3d4663;
+  --color-gray-700: #283044;
+  --color-gray-800: #141925;
+  --color-gray-900: #090b11;
 
-  --yellow-200: #fbefbb;
-  --yellow-500: #f3e076;
-  --yellow-700: #e6d114;
-  --yellow-800: #bcab1a;
+  --color-green-50: #fbfcfa;
+  --color-green-200: #e9ede3;
+  --color-green-500: #becaab;
+  --color-green-700: #94a977;
+  --color-green-800: #7f985d;
 
-  --accent-light: #698352;
-  --accent-regular: #c1d7ae;
-  --accent-dark: #7f985d;
-  --accent-overlay: #e2e8ce;
-  --accent-subtle-overlay: var(--accent-overlay);
-  --accent-text-over: var(--gray-999);
+  --color-yellow-200: #fbefbb;
+  --color-yellow-500: #f3e076;
+  --color-yellow-700: #e6d114;
+  --color-yellow-800: #bcab1a;
 
-  --text-muted: var(--gray-500);
+  /* Text colours by role */
+  --color-muted: var(--color-gray-500);
+  --color-link-body: #617a4c;
 
-  --link-color: var(--accent-regular);
-
-  --link-body-color: #617a4c;
-
-  /* Gradients */
-  --gradient-stop-1: var(--accent-light);
-  --gradient-stop-2: var(--accent-regular);
-  --gradient-stop-3: var(--accent-dark);
-  --gradient-subtle: linear-gradient(
-    150deg,
-    var(--gray-900) 19%,
-    var(--gray-999) 150%
-  );
-  --gradient-accent: linear-gradient(
-    150deg,
-    var(--gradient-stop-1),
-    var(--gradient-stop-2),
-    var(--gradient-stop-3)
-  );
-  --gradient-accent-orange: linear-gradient(
-    150deg,
-    #ca7879,
-    var(--accent-regular),
-    var(--accent-dark)
-  );
-  --gradient-stroke: linear-gradient(180deg, var(--gray-900), var(--gray-700));
-
-  /* Shadows */
+  /* Shadows — the only ones: Tailwind's own shadow, drop-shadow, inset-shadow and
+     text-shadow scales are cleared, so every shadow on the site comes from these three. */
+  --shadow-*: initial;
+  --drop-shadow-*: initial;
+  --inset-shadow-*: initial;
+  --text-shadow-*: initial;
   --shadow-sm:
     0px 6px 3px rgba(9, 11, 17, 0.01), 0px 4px 2px rgba(9, 11, 17, 0.01),
     0px 2px 2px rgba(9, 11, 17, 0.02), 0px 0px 1px rgba(9, 11, 17, 0.03);
@@ -75,9 +52,8 @@
     0px 62px 25px rgba(9, 11, 17, 0.01), 0px 35px 21px rgba(9, 11, 17, 0.05),
     0px 16px 16px rgba(9, 11, 17, 0.1), 0px 4px 9px rgba(9, 11, 17, 0.12);
 
-  /* Text Sizes */
+  /* Text sizes (`text-xs` and `text-base` are Tailwind's own) */
   --text-sm: 0.875rem;
-  --text-base: 1rem;
   --text-md: 1.125rem;
   --text-lg: 1.25rem;
   --text-xl: 1.625rem;
@@ -86,74 +62,20 @@
   --text-4xl: 3.5rem;
   --text-5xl: 4.5rem;
 
-  /* Fonts */
+  /* Fonts. `--font-public-sans` and `--font-rubik` come from <Font> in MainHead.astro: the
+     self-hosted family plus a fallback metric-matched to it, so text barely shifts when the
+     font arrives. */
   --font-system:
     system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   --font-body: var(--font-public-sans), var(--font-system);
   --font-brand: var(--font-rubik), var(--font-system);
-
-  /* Transitions */
-  --theme-transition: 0.2s ease-in-out;
-}
-
-/* Register existing design tokens as Tailwind theme values. */
-@theme {
-  --color-gray-0: var(--gray-0);
-  --color-gray-100: var(--gray-100);
-  --color-gray-200: var(--gray-200);
-  --color-gray-300: var(--gray-300);
-  --color-gray-400: var(--gray-400);
-  --color-gray-500: var(--gray-500);
-  --color-gray-600: var(--gray-600);
-  --color-gray-700: var(--gray-700);
-  --color-gray-800: var(--gray-800);
-  --color-gray-900: var(--gray-900);
-  --color-gray-999: var(--gray-999);
-  --color-green-50: var(--green-50);
-  --color-green-200: var(--green-200);
-  --color-green-500: var(--green-500);
-  --color-green-700: var(--green-700);
-  --color-green-800: var(--green-800);
-  --color-yellow-200: var(--yellow-200);
-  --color-yellow-500: var(--yellow-500);
-  --color-yellow-700: var(--yellow-700);
-  --color-yellow-800: var(--yellow-800);
-  --color-muted: var(--text-muted);
-  --color-link-body: var(--link-body-color);
-  --color-accent-regular: var(--accent-regular);
-  --color-accent-dark: var(--accent-dark);
-  --color-accent-text-over: var(--accent-text-over);
-  --color-accent-subtle-overlay: var(--accent-subtle-overlay);
-
-  --font-brand: var(--font-brand);
-
-  --text-sm: var(--text-sm);
-  --text-md: var(--text-md);
-  --text-lg: var(--text-lg);
-  --text-xl: var(--text-xl);
-  --text-2xl: var(--text-2xl);
-  --text-3xl: var(--text-3xl);
-  --text-4xl: var(--text-4xl);
-  --text-5xl: var(--text-5xl);
-
-  --shadow-sm: var(--shadow-sm);
-  --shadow-md: var(--shadow-md);
-  --shadow-lg: var(--shadow-lg);
-
-  /*
-   * No `--breakpoint-*` overrides: the project uses Tailwind's own scale (sm 40rem,
-   * md 48rem, lg 64rem, xl 80rem). Overriding only some of them is also what broke the
-   * variant ordering before — a px value among the rem ones can't be sorted against
-   * them, so `sm:` was emitted last and beat `lg:` and `xl:` at every width. A one-off
-   * breakpoint belongs in the component that needs it, as `min-[…]:` — see Nav.astro.
-   */
 }
 
 /*
- * In Tailwind's own `base` layer so utility classes (in the `utilities`
- * layer, which always wins) can override these element defaults — e.g. a
- * `text-*` class on an `<a>` needs to beat this layer's `color: var(--link-color)`.
+ * Element defaults, on top of Tailwind's reset (which already handles box-sizing, margins,
+ * `line-height: 1.5`, responsive images and links inheriting their text colour). In
+ * Tailwind's own `base` layer so utility classes always win over them.
  */
 @layer base {
   html,
@@ -163,27 +85,10 @@
   }
 
   body {
-    background-color: var(--green-50);
-    color: var(--gray-800);
+    background-color: var(--color-green-50);
+    color: var(--color-gray-800);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
-    line-height: 1.5;
-  }
-
-  *,
-  *::after,
-  *::before {
-    box-sizing: border-box;
-    margin: 0;
-  }
-
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-
-  a {
-    color: var(--link-color);
   }
 
   h1,
@@ -194,7 +99,7 @@
     line-height: 1.1;
     font-family: var(--font-brand);
     font-weight: 600;
-    color: var(--gray-100);
+    color: var(--color-gray-100);
   }
 
   h1 {
@@ -219,10 +124,15 @@
 }
 
 /*
- * Short bodies rendered from markdown (content collection entries, CMS fields).
- * Their elements can't be reached with utility classes, so they're styled here.
- * Unlayered, so these win over the element defaults in Tailwind's `base` layer.
+ * Bodies rendered from markdown (blog posts, psychotherapy entries, CMS fields). Their
+ * elements can't take utility classes, so they're styled here — once, so a body looks the
+ * same wherever it came from. Unlayered, so these win over the element defaults above;
+ * Tailwind's reset strips headings, lists and quotes, so those are restored too.
  */
+.entry-body > :first-child {
+  margin-top: 0;
+}
+
 .entry-body p {
   margin-top: 0.5rem;
 }
@@ -232,16 +142,17 @@
 }
 
 /*
- * Markdown links are underlined at rest, not just on hover: colour alone can't carry the
- * affordance mid-paragraph (WCAG 1.4.1). Hover thickens the underline rather than changing
- * the colour, so the contrast ratio holds in every state.
+ * Links are underlined at rest, not just on hover: colour alone can't carry the affordance
+ * mid-paragraph (WCAG 1.4.1). Hover thickens the underline rather than changing the
+ * colour, so the contrast ratio holds in every state.
  */
 .entry-body a {
-  color: var(--link-body-color);
+  color: var(--color-link-body);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
-  transition: text-decoration-thickness var(--theme-transition);
+  transition: text-decoration-thickness var(--default-transition-duration)
+    var(--default-transition-timing-function);
 }
 
 .entry-body a:hover,
@@ -249,20 +160,10 @@
   text-decoration-thickness: 2px;
 }
 
-/*
- * Blog posts run longer than a psychotherapy entry and reach for more than paragraphs:
- * headings, lists, quotes and images. Tailwind's `base` layer resets all of these, so
- * they are restored here rather than per page — both collections render through
- * `.entry-body`, and a body should look the same wherever it came from.
- */
-.entry-body > :first-child {
-  margin-top: 0;
-}
-
 .entry-body :is(h2, h3, h4) {
   margin-top: 2rem;
   margin-bottom: 0.5rem;
-  color: var(--gray-800);
+  color: var(--color-gray-800);
   font-weight: 600;
   line-height: 1.3;
 }
@@ -293,8 +194,8 @@
 .entry-body blockquote {
   margin-top: 1rem;
   padding-left: 1rem;
-  border-left: 3px solid var(--green-500);
-  color: var(--text-muted);
+  border-left: 3px solid var(--color-green-500);
+  color: var(--color-muted);
   font-style: italic;
 }
 
@@ -307,5 +208,5 @@
 .entry-body hr {
   margin-block: 2rem;
   border: 0;
-  border-top: 1px solid var(--green-200);
+  border-top: 1px solid var(--color-green-200);
 }

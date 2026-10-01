@@ -43,14 +43,14 @@ const services = entriesForLocale(await getCollection('psychotherapy'), lang).so
 					<li>
 						<a
 							href={localizedPostPath('psychotherapy', lang, slugify(service.data.title))}
-							class="group relative block overflow-hidden rounded-2xl shadow-md no-underline transition-shadow duration-200 ease-in-out hover:shadow-lg"
+							class="group relative block overflow-hidden rounded-2xl shadow-md no-underline transition-shadow hover:shadow-lg"
 						>
 							<Image
 								src={service.data.featuredImage}
 								alt=""
 								width={640}
 								height={480}
-								class="aspect-[4/3] w-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+								class="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-105"
 							/>
 							<!-- Scrim under the title, so it stays readable whatever the photo behind it. -->
 							<span

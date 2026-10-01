@@ -73,7 +73,7 @@ const menuFooterClass =
 
 /** One 1px bar of the hamburger icon; morphs into an X via `group-aria-expanded:*` on the button. */
 const hamburgerBarClass =
-  "block h-0.5 w-6 bg-gray-300 transition duration-200 ease-in-out " +
+  "block h-0.5 w-6 bg-gray-300 transition " +
   "group-hover:bg-green-800 group-active:bg-green-500";
 ---
 
@@ -103,7 +103,7 @@ const hamburgerBarClass =
               {label}
               {children && children.length > 0 && (
                 <svg
-                  class="ml-1 inline-block align-middle transition-transform duration-200 ease-in-out group-focus-within:rotate-180 group-hover:rotate-180"
+                  class="ml-1 inline-block align-middle transition-transform group-focus-within:rotate-180 group-hover:rotate-180"
                   width="10"
                   height="10"
                   viewBox="0 0 24 24"
@@ -121,7 +121,7 @@ const hamburgerBarClass =
 
             {/* Opens on hover and on keyboard focus */}
             {children && children.length > 0 && (
-              <div class="invisible absolute top-full left-0 z-50 w-max min-w-full pt-2 opacity-0 transition-opacity duration-200 ease-in-out group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+              <div class="invisible absolute top-full left-0 z-50 w-max min-w-full pt-2 opacity-0 transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
                 <ul class="m-0 flex w-full list-none flex-col gap-1 rounded-2xl bg-green-200 p-2 shadow-md">
                   {children.map((child) => (
                     <li>
@@ -170,7 +170,7 @@ const hamburgerBarClass =
   <!-- Mobile menu -->
   <div
     id="mobile-menu"
-    class="absolute inset-x-0 top-full z-50 hidden flex-col gap-1 bg-green-200 p-5 pt-0 text-right drop-shadow-lg drop-shadow-green-200 xl:hidden"
+    class="absolute inset-x-0 top-full z-50 hidden flex-col gap-1 bg-green-200 p-5 pt-0 text-right shadow-md xl:hidden"
   >
     <ul class="flex list-none flex-col gap-1 p-0">
       {

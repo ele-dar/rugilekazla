@@ -1,7 +1,7 @@
 ---
 interface Props {
-	/** Destination, already localized by the caller — see `localizedPath`. */
-	href: string;
+  /** Destination, already localized by the caller — see `localizedPath`. */
+  href: string;
 }
 
 const { href } = Astro.props;
@@ -10,8 +10,8 @@ const { href } = Astro.props;
 <!-- Pill-shaped call-to-action link. Lifts from shadow-md to shadow-lg on hover, alongside
 	the background shift, so the whole button animates as one. -->
 <a
-	href={href}
-	class="rounded-full bg-yellow-500 px-6 py-3 text-sm font-medium text-gray-700 no-underline shadow-md transition duration-200 ease-in-out hover:bg-yellow-700 hover:shadow-lg"
+  href={href}
+  class="rounded-full bg-yellow-500 px-6 py-3 text-sm font-medium text-gray-700 no-underline shadow-md transition hover:bg-yellow-700 hover:shadow-lg"
 >
-	<slot />
+  <slot />
 </a>
