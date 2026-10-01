@@ -100,16 +100,16 @@ const lt = {
     "Jei norite pakviesti mane paskaityti paskaitą ar pravesti seminarą jūsų renginyje, susisiekime.",
   "trainings.cta": "Susisiekime",
 
+  // Contacts
   "contacts.title": "Kontaktai",
-  "contacts.description": "TODO: kontaktinės informacijos aprašymas.",
+  "contacts.description":
+    "Susisiekite su psichologe Rugile Kazlauskiene el. paštu ar telefonu ir užsiregistruokite konsultacijai kabinete Kaune arba nuotoliu.",
   "contacts.heading": "Kontaktai",
-  /** Labels above each detail on the contacts card. */
   "contacts.email": "El. paštas",
   "contacts.phone": "Telefonas",
   "contacts.office": "Kabinetas",
-  /** Shown in the map panel until an address, and with it an embed URL, is set. */
-  "contacts.mapPlaceholder": "Žemėlapis su kabineto vieta",
   "contacts.mapTitle": "Kabineto vieta žemėlapyje",
+  "contacts.openMap": "Atidaryti Google Maps",
 } as const;
 
 export type UIKey = keyof typeof lt;
@@ -195,13 +195,15 @@ export const ui: Record<Locale, Record<UIKey, string>> = {
       "If you would like to invite me to give a lecture or run a seminar at your event, let's get in touch.",
     "trainings.cta": "Let's get in touch",
 
+    // Contacts
     "contacts.title": "Contacts",
-    "contacts.description": "TODO: description of contact information.",
+    "contacts.description":
+      "Get in touch with psychologist Rugilė Kazlauskienė by email or phone to book a consultation at the office in Kaunas or online.",
     "contacts.heading": "Contacts",
     "contacts.email": "Email",
     "contacts.phone": "Phone",
     "contacts.office": "Office",
-    "contacts.mapPlaceholder": "Map showing office location",
     "contacts.mapTitle": "Office location on a map",
+    "contacts.openMap": "Open in Google Maps",
   },
 };

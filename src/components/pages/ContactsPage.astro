@@ -1,115 +1,136 @@
 ---
-import Hero from '~/components/Hero.astro';
-import Icon from '~/components/Icon.astro';
-import type { iconPaths } from '~/components/IconPaths';
-import { contactDetails, isPlaceholder } from '~/contacts';
-import type { Locale } from '~/i18n/ui';
-import { alternateUrls, useTranslations } from '~/i18n/utils';
-import BaseLayout from '~/layouts/BaseLayout.astro';
-import SocialLinks from '~/components/SocialLinks.astro';
+import { Image } from "astro:assets";
+import officeMap from "~/assets/office-map.webp";
+import Hero from "~/components/Hero.astro";
+import Icon from "~/components/Icon.astro";
+import type { iconPaths } from "~/components/IconPaths";
+import { contactDetails } from "~/contacts";
+import type { Locale } from "~/i18n/ui";
+import { alternateUrls, useTranslations } from "~/i18n/utils";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import SocialLinks from "~/components/SocialLinks.astro";
+import { leavesSite } from "~/utils/external-links";
 
 interface Props {
-	lang: Locale;
+  lang: Locale;
 }
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-/** One row of the details card. `href` is what the value links to, where it links at all —
- *  an address is text, and a detail still awaiting its real value never links. */
-const details: { icon: keyof typeof iconPaths; label: string; value: string; href?: string }[] = [
-	{
-		icon: 'envelope',
-		label: t('contacts.email'),
-		value: contactDetails.email,
-		href: `mailto:${contactDetails.email}`,
-	},
-	{
-		icon: 'phone',
-		label: t('contacts.phone'),
-		value: contactDetails.phone,
-		// `tel:` takes no spaces, and the number is written with them for reading.
-		href: `tel:${contactDetails.phone.replace(/\s+/g, '')}`,
-	},
-	{
-		icon: 'map-pin',
-		label: t('contacts.office'),
-		value: contactDetails.address,
-	},
+const details: {
+  icon: keyof typeof iconPaths;
+  label: string;
+  value: string;
+  href?: string;
+}[] = [
+  {
+    icon: "envelope",
+    label: t("contacts.email"),
+    value: contactDetails.email,
+    href: contactDetails.emailHref,
+  },
+  {
+    icon: "phone",
+    label: t("contacts.phone"),
+    value: contactDetails.phone,
+    href: contactDetails.phoneHref,
+  },
+  {
+    icon: "map-pin",
+    label: t("contacts.office"),
+    value: contactDetails.address,
+  },
 ];
 ---
 
 <BaseLayout
-	title={t('contacts.title')}
-	description={t('contacts.description')}
-	lang={lang}
-	alternates={alternateUrls('contacts')}
+  title={t("contacts.title")}
+  description={t("contacts.description")}
+  lang={lang}
+  alternates={alternateUrls("contacts")}
 >
-	<main class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10 lg:gap-12 lg:py-14">
-		<Hero title={t('contacts.heading')} align="start" />
+  <main
+    class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10 lg:gap-12 lg:py-14"
+  >
+    <Hero title={t("contacts.heading")} align="start" />
 
-		<!-- Card beside map on wide screens. Below `lg` they stack, card first: the details
-			are the point of the page, the map only helps you find the door. -->
-		<!-- No `items-start`: both columns stretch to the taller of the two, which is the map
-			at its `min-h`. The card then runs the full height with its content at the top. -->
-		<!-- `grid-cols-1` is `minmax(0,1fr)`: without it the implicit column sizes to its
-			widest content (the unbreakable email), pushing both past narrow screens. -->
-		<div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-8">
-			<div class="flex flex-col gap-6 rounded-3xl bg-gray-0 p-7 shadow-md lg:p-8">
-				<!-- On phones the icon shrinks and sits inline with the label, leaving the value the
-					full card width; from `sm` it grows and spans both lines beside them. -->
-				<ul class="m-0 flex list-none flex-col gap-5 p-0">
-					{
-						details.map(({ href, icon, label, value }) => (
-							<li class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 gap-y-1 sm:gap-x-4 sm:gap-y-0.5">
-								<span class="flex size-7 items-center justify-center rounded-full bg-green-200 text-sm text-green-800 sm:row-span-2 sm:size-11 sm:text-xl">
-									<Icon icon={icon} />
-								</span>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-[24rem_1fr] lg:gap-8">
+      <div
+        class="flex flex-col gap-6 rounded-3xl bg-gray-0 p-7 shadow-md lg:p-8"
+      >
+        <ul class="m-0 flex list-none flex-col gap-5 p-0">
+          {
+            details.map(({ href, icon, label, value }) => (
+              <li class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 gap-y-1 sm:gap-x-4 sm:gap-y-0.5">
+                <span class="flex size-7 items-center justify-center rounded-full bg-green-200 text-sm text-green-800 sm:row-span-2 sm:size-11 sm:text-xl">
+                  <Icon icon={icon} />
+                </span>
 
-								<span class="text-xs font-semibold tracking-wider text-muted uppercase sm:self-end">
-									{label}
-								</span>
+                <span class="text-xs font-semibold tracking-wider text-muted uppercase sm:self-end">
+                  {label}
+                </span>
 
-								{href && !isPlaceholder(value) ? (
-									<a
-										href={href}
-										class="col-span-2 text-base font-medium wrap-break-word text-gray-700 no-underline transition-colors duration-200 ease-in-out hover:text-green-800 sm:col-span-1 sm:col-start-2 sm:self-start"
-									>
-										{value}
-									</a>
-								) : (
-									<span class="col-span-2 text-base font-medium wrap-break-word text-gray-700 sm:col-span-1 sm:col-start-2 sm:self-start">
-										{value}
-									</span>
-								)}
-							</li>
-						))
-					}
-				</ul>
+                {href ? (
+                  <a
+                    href={href}
+                    class="col-span-2 text-base font-medium wrap-break-word text-gray-700 no-underline transition-colors duration-200 ease-in-out hover:text-green-800 sm:col-span-1 sm:col-start-2 sm:self-start"
+                  >
+                    {value}
+                  </a>
+                ) : (
+                  <span class="col-span-2 text-base font-medium wrap-break-word text-gray-700 sm:col-span-1 sm:col-start-2 sm:self-start">
+                    {value}
+                  </span>
+                )}
+              </li>
+            ))
+          }
+        </ul>
 
-				<div class="flex flex-col gap-3 border-t border-gray-100 pt-6">
-					<span class="text-sm font-medium text-muted">{t('socials.follow')}</span>
+        <div class="flex flex-col gap-3 border-t border-gray-100 pt-6">
+          <span class="text-sm font-medium text-muted"
+            >{t("socials.follow")}</span
+          >
 
-					<SocialLinks variant="pill" />
-				</div>
-			</div>
-			<iframe
-				src={contactDetails.mapEmbedUrl}
-				title={t('contacts.mapTitle')}
-				loading="lazy"
-				referrerpolicy="no-referrer-when-downgrade"
-				class="h-80 w-full rounded-3xl border-0 shadow-md lg:h-full lg:min-h-112"
-			/>
-		</div>
-	</main>
+          <SocialLinks variant="pill" />
+        </div>
+      </div>
+      <!-- A picture of the map, not an embed: nothing loads from Google until the visitor
+				chooses to open Maps. Drawn from OpenStreetMap, whose licence asks for the credit
+				below. Shown at its natural size and cropped to the frame. -->
+      <div
+        class="relative h-80 overflow-hidden rounded-3xl shadow-md lg:h-full lg:min-h-112"
+      >
+        <a
+          href={contactDetails.mapUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group block size-full rounded-3xl focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-green-800"
+        >
+          <Image
+            src={officeMap}
+            alt={t("contacts.mapTitle")}
+            class="size-full object-none"
+          />
+          <span
+            class="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-gray-0 px-4 py-2 text-sm font-medium text-gray-700 shadow-md transition-colors duration-200 ease-in-out group-hover:text-green-800"
+          >
+            {t("contacts.openMap")}
+            <span aria-hidden="true">↗</span>
+          </span>
+        </a>
+        <small
+          class="absolute right-0 bottom-0 rounded-tl-lg bg-gray-0/85 px-2 py-0.5 text-xs text-muted"
+        >
+          © <a
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-muted underline">OpenStreetMap</a
+          >
+        </small>
+      </div>
+    </div>
+  </main>
 </BaseLayout>
-
-<style>
-	.map-placeholder {
-		background-image: repeating-linear-gradient(
-			-45deg,
-			var(--gray-50) 0 10px,
-			transparent 10px 20px
-		);
-	}
-</style>

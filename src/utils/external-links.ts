@@ -14,6 +14,9 @@ type HastPlugin = Extract<NonNullable<SatteriProcessorOptions['hastPlugins']>[nu
  */
 const LEAVES_SITE = /^(https?:)?\/\//i;
 
+/** Whether a link should open in a new tab — the same rule for components as for markdown. */
+export const leavesSite = (href: string) => LEAVES_SITE.test(href);
+
 /**
  * Opens links written in an entry's markdown in a new tab when they point off the site.
  *
@@ -31,7 +34,7 @@ export const externalLinks: HastPlugin = {
 		filter: ['a'],
 		visit(node, ctx) {
 			const href = node.properties?.href;
-			if (typeof href !== 'string' || !LEAVES_SITE.test(href)) return;
+			if (typeof href !== 'string' || !leavesSite(href)) return;
 
 			ctx.setProperty(node, 'target', '_blank');
 			// `noopener` keeps the new tab from reaching back through `window.opener`;

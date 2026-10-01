@@ -1,12 +1,13 @@
 ---
-import { defaultLocale, type Locale } from '~/i18n/ui';
-import { useTranslations, withBase } from '~/i18n/utils';
-import '../styles/global.css';
+import { Font } from "astro:assets";
+import { defaultLocale, type Locale } from "~/i18n/ui";
+import { useTranslations, withBase } from "~/i18n/utils";
+import "../styles/global.css";
 
 interface Props {
-	title?: string | undefined;
-	description?: string | undefined;
-	lang?: Locale | undefined;
+  title?: string | undefined;
+  description?: string | undefined;
+  lang?: Locale | undefined;
 }
 
 const { title, description, lang = defaultLocale } = Astro.props;
@@ -14,26 +15,28 @@ const t = useTranslations(lang);
 
 /** Pages pass their own short title ('Patirtis'); the site name is appended here so every tab
  * reads the same way. The home page passes no title and gets the site name on its own. */
-const siteTitle = t('site.title');
+const siteTitle = t("site.title");
 const pageTitle = title ? `${title} | ${siteTitle}` : siteTitle;
 
 /** Set only by the GitHub Pages demo build (see .github/workflows/demo-pages.yml). The demo
  * is a copy of the site on a public URL, so it asks search engines to leave it alone rather
  * than have it indexed as a duplicate of the real one. */
-const isDemo = import.meta.env.PUBLIC_DEMO === 'true';
+const isDemo = import.meta.env.PUBLIC_DEMO === "true";
 ---
 
 <meta charset="utf-8" />
-<meta name="description" property="og:description" content={description ?? t('site.description')} />
+<meta
+  name="description"
+  property="og:description"
+  content={description ?? t("site.description")}
+/>
 <meta name="viewport" content="width=device-width" />
 <meta name="generator" content={Astro.generator} />
 {isDemo && <meta name="robots" content="noindex, nofollow" />}
 <title>{pageTitle}</title>
 
-<link rel="icon" href={withBase('/favicon.ico')} />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-	href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,700;1,400&family=Rubik:wght@500;600&display=swap"
-	rel="stylesheet"
-/>
+<link rel="icon" href={withBase("/favicon.ico")} />
+<!-- Self-hosted (see `fonts` in astro.config.mjs). Preloaded: the faces every page shows
+	first — upright body text and the headings. -->
+<Font cssVariable="--font-public-sans" preload={[{ style: "normal" }]} />
+<Font cssVariable="--font-rubik" preload />

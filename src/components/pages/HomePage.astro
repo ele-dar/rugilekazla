@@ -1,16 +1,16 @@
 ---
-import { Image } from 'astro:assets';
-import portrait from '~/assets/portrait.jpg';
-import type { Locale, RouteName } from '~/i18n/ui';
-import { localizedPath, useTranslations, withBase } from '~/i18n/utils';
-import BaseLayout from '~/layouts/BaseLayout.astro';
-import Hero from '~/components/Hero.astro';
-import Icon from '~/components/Icon.astro';
-import type { iconPaths } from '~/components/IconPaths';
-
+import { Image } from "astro:assets";
+import portrait from "~/assets/portrait.jpg";
+import type { Locale, RouteName } from "~/i18n/ui";
+import { localizedPath, useTranslations, withBase } from "~/i18n/utils";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import Icon from "~/components/Icon.astro";
+import type { iconPaths } from "~/components/IconPaths";
+import { contactDetails } from "~/contacts";
 
 interface Props {
-	lang: Locale;
+  lang: Locale;
 }
 
 const { lang } = Astro.props;
@@ -18,130 +18,148 @@ const t = useTranslations(lang);
 
 /** Home lives at '/' for the default locale and '/en/' for English — it doesn't follow the
  * `routes` slug pattern the other pages use, since the default locale has no path prefix. */
-const alternates = { lt: withBase('/'), en: withBase('/en/') } satisfies Record<Locale, string>;
-
-const phone = '+37062949815';
-const phoneDisplay = '+370 629 49815';
+const alternates = { lt: withBase("/"), en: withBase("/en/") } satisfies Record<
+  Locale,
+  string
+>;
 
 /** Hero shortcut card — the pages most worth a click straight from the homepage.
  *  `tone` alternates the icon bubble between the green and yellow accents. */
 const heroLinks: {
-	label: string;
-	route: RouteName;
-	icon: keyof typeof iconPaths;
-	tone: 'green' | 'yellow';
+  label: string;
+  route: RouteName;
+  icon: keyof typeof iconPaths;
+  tone: "green" | "yellow";
 }[] = [
-	{ label: t('nav.psychotherapy'), route: 'psychotherapy', icon: 'heart', tone: 'green' },
-	{ label: t('nav.about'), route: 'about', icon: 'user', tone: 'yellow' },
-	{ label: t('nav.trainings'), route: 'trainings', icon: 'graduation-cap', tone: 'green' },
-	{ label: t('nav.contacts'), route: 'contacts', icon: 'envelope', tone: 'yellow' },
+  {
+    label: t("nav.psychotherapy"),
+    route: "psychotherapy",
+    icon: "heart",
+    tone: "green",
+  },
+  { label: t("nav.about"), route: "about", icon: "user", tone: "yellow" },
+  {
+    label: t("nav.trainings"),
+    route: "trainings",
+    icon: "graduation-cap",
+    tone: "green",
+  },
+  {
+    label: t("nav.contacts"),
+    route: "contacts",
+    icon: "envelope",
+    tone: "yellow",
+  },
 ];
 ---
 
 <BaseLayout lang={lang} alternates={alternates}>
-	<div class="flex flex-col gap-20 lg:gap-48">
-		<!-- The tinted band runs full-bleed from under the nav to behind the shortcut card. -->
-		<div class="flex flex-col">
-			<div class="bg-green-200 pb-24 max-w-83rem lg:pb-28 ">
-				<header
-					class="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pt-4 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-16 lg:pt-8"
-				>
-					<Hero title={t('home.hero.title')} tagline={t('home.hero.tagline')} align="start">
-						<div class="flex flex-col gap-6 lg:gap-8">
-							<p class="mx-auto max-w-[44ch] text-base text-muted lg:mx-0">
-								{t('home.hero.description')}
-							</p>
+  <div class="flex flex-col gap-20 lg:gap-48">
+    <!-- The tinted band runs full-bleed from under the nav to behind the shortcut card. -->
+    <div class="flex flex-col">
+      <div class="max-w-83rem bg-green-200 pb-24 lg:pb-28">
+        <header
+          class="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pt-4 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-16 lg:pt-8"
+        >
+          <Hero
+            title={t("home.hero.title")}
+            tagline={t("home.hero.tagline")}
+            align="start"
+          >
+            <div class="flex flex-col gap-6 lg:gap-8">
+              <p class="mx-auto max-w-[44ch] text-base text-muted lg:mx-0">
+                {t("home.hero.description")}
+              </p>
 
-							<a
-								href={`tel:${phone}`}
-								class="group mx-auto flex w-fit items-center gap-4 no-underline lg:mx-0"
-							>
-								<span
-									class="flex size-12 items-center justify-center rounded-full bg-yellow-500 text-gray-700 transition-colors duration-200 ease-in-out group-hover:bg-yellow-700"
-								>
-									<Icon icon="phone" size="1.25rem" />
-								</span>
-								<span class="text-lg font-semibold text-gray-700">{phoneDisplay}</span>
-							</a>
-						</div>
-					</Hero>
+              <a
+                href={contactDetails.phoneHref}
+                class="group mx-auto flex w-fit items-center gap-4 no-underline lg:mx-0"
+              >
+                <span
+                  class="flex size-12 items-center justify-center rounded-full bg-yellow-500 text-gray-700 transition-colors duration-200 ease-in-out group-hover:bg-yellow-700"
+                >
+                  <Icon icon="phone" size="1.25rem" />
+                </span>
+                <span class="text-lg font-semibold text-gray-700"
+                  >{contactDetails.phone}</span
+                >
+              </a>
+            </div>
+          </Hero>
 
-					<div
-						class="mx-auto w-full max-w-sm rounded-[2rem] bg-white p-3 shadow-lg lg:max-w-none lg:rounded-[2.5rem] lg:p-4"
-					>
-						<Image
-							src={portrait}
-							alt=""
-							width={560}
-							height={700}
-							class="aspect-[4/5] w-full rounded-3xl object-cover object-top lg:rounded-[2rem]"
-						/>
-					</div>
-				</header>
-			</div>
+          <div
+            class="mx-auto w-full max-w-sm rounded-[2rem] bg-white p-3 shadow-lg lg:max-w-none lg:rounded-[2.5rem] lg:p-4"
+          >
+            <Image
+              src={portrait}
+              alt=""
+              width={560}
+              height={700}
+              class="aspect-[4/5] w-full rounded-3xl object-cover object-top lg:rounded-[2rem]"
+            />
+          </div>
+        </header>
+      </div>
 
-			<!-- Pulled up so the card straddles the edge of the tinted band. -->
-			<div class="relative z-10 mx-auto -mt-12 w-full max-w-6xl px-6 lg:-mt-14">
-				<ul
-					class="m-0 grid list-none grid-cols-1 divide-y divide-green-200 rounded-2xl bg-white p-0 shadow-md lg:grid-cols-4 lg:divide-x lg:divide-y-0 lg:rounded-3xl"
-				>
-					{
-						heroLinks.map(({ label, route, icon, tone }) => (
-							<li>
-								<a
-									href={localizedPath(route, lang)}
-									class="group flex items-center gap-4 px-6 py-5 no-underline lg:px-7 lg:py-6"
-								>
-									<span
-										class:list={[
-											'flex size-10 shrink-0 items-center justify-center rounded-full transition-colors duration-200 ease-in-out',
-											tone === 'green'
-												? 'bg-green-200 group-hover:bg-green-500'
-												: 'bg-yellow-200 group-hover:bg-yellow-500',
-										]}
-									>
-										<Icon icon={icon} size="1.125rem" color="var(--gray-600)" />
-									</span>
-									<span class="text-md font-medium text-gray-700 transition-colors duration-200 ease-in-out group-hover:text-green-800">
-										{label}
-									</span>
-									<svg
-										class="ml-auto shrink-0 lg:hidden"
-										viewBox="0 0 24 24"
-										width="16"
-										height="16"
-										fill="none"
-										stroke="var(--gray-300)"
-										stroke-width="2"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										aria-hidden="true"
-									>
-										<path d="m9 6 6 6-6 6" />
-									</svg>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</div>
+      <!-- Pulled up so the card straddles the edge of the tinted band. -->
+      <div class="relative z-10 mx-auto -mt-12 w-full max-w-6xl px-6 lg:-mt-14">
+        <ul
+          class="m-0 grid list-none grid-cols-1 divide-y divide-green-200 rounded-2xl bg-white p-0 shadow-md lg:grid-cols-4 lg:divide-x lg:divide-y-0 lg:rounded-3xl"
+        >
+          {
+            heroLinks.map(({ label, route, icon, tone }) => (
+              <li>
+                <a
+                  href={localizedPath(route, lang)}
+                  class="group flex items-center gap-4 px-6 py-5 no-underline lg:px-7 lg:py-6"
+                >
+                  <span
+                    class:list={[
+                      "flex size-10 shrink-0 items-center justify-center rounded-full transition-colors duration-200 ease-in-out",
+                      tone === "green"
+                        ? "bg-green-200 group-hover:bg-green-500"
+                        : "bg-yellow-200 group-hover:bg-yellow-500",
+                    ]}
+                  >
+                    <Icon icon={icon} size="1.125rem" color="var(--gray-600)" />
+                  </span>
+                  <span class="text-md font-medium text-gray-700 transition-colors duration-200 ease-in-out group-hover:text-green-800">
+                    {label}
+                  </span>
+                  <svg
+                    class="ml-auto shrink-0 lg:hidden"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="var(--gray-300)"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="m9 6 6 6-6 6" />
+                  </svg>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
 
-			<div class="mx-auto mt-14 w-full max-w-6xl px-6 lg:mt-20">
-				<figure class="mx-auto flex max-w-xl items-start gap-4 lg:gap-5">
-					<span
-						aria-hidden="true"
-						class="font-brand text-5xl leading-none font-semibold text-yellow-700 select-none"
-					>
-						&ldquo;
-					</span>
-					<blockquote class="text-md text-gray-700 lg:text-lg">
-						{t('home.quote')}
-					</blockquote>
-				</figure>
-			</div>
-
-		</div>
-
-
-	</div>
+      <div class="mx-auto mt-14 w-full max-w-6xl px-6 lg:mt-20">
+        <figure class="mx-auto flex max-w-xl items-start gap-4 lg:gap-5">
+          <span
+            aria-hidden="true"
+            class="font-brand text-5xl leading-none font-semibold text-yellow-700 select-none"
+          >
+            &ldquo;
+          </span>
+          <blockquote class="text-md text-gray-700 lg:text-lg">
+            {t("home.quote")}
+          </blockquote>
+        </figure>
+      </div>
+    </div>
+  </div>
 </BaseLayout>

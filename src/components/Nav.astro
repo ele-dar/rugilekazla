@@ -81,7 +81,7 @@ const hamburgerBarClass =
   class="relative flex items-center justify-between bg-green-200 px-6 py-4 font-medium xl:px-24"
 >
   <!-- Desktop menu left -->
-  <div class="flex items-center gap-5">
+  <div class="flex items-center gap-4">
     <a href={homeHrefs[lang]}>
       <Image
         src={logo}
@@ -95,7 +95,7 @@ const hamburgerBarClass =
       />
     </a>
 
-    <ul class="m-0 hidden list-none items-center gap-5 xl:flex">
+    <ul class="m-0 hidden list-none items-center gap-4 xl:flex">
       {
         textLinks.map(({ label, href, children }) => (
           <li class="group relative">
@@ -205,7 +205,7 @@ const hamburgerBarClass =
     </div>
   </div>
 
-   <!-- For browsers without JS. TO-DO check functionality -->
+  <!-- For browsers without JS. TO-DO check functionality -->
   <noscript>
     <div
       class="absolute inset-x-0 top-full z-50 flex flex-col gap-1 border-t border-gray-800 bg-green-200 p-5 xl:hidden"

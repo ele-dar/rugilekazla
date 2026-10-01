@@ -1,30 +1,23 @@
 /**
- * Rugilė's contact details, shown on the contacts page.
- *
- * Alongside src/socials.ts rather than in the CMS: there are three of them, they change
- * rarely, and a typo in the email would be invisible until someone failed to reach her.
+ * The one place the practice's contact details are written. Every page reads them from here
+ * — including the link forms below — so a changed number or address is a single edit.
  */
+const email = "rugile.kazlauskiene@gmail.com";
+/** Written with spaces, for reading. */
+const phone = "+370 629 49815";
+const address = "Maironio g. 11, Kaunas";
+
 export const contactDetails = {
-  email: "rugile.kazlauskiene@gmail.com",
-  phone: "+370 629 49815",
-  address: "Maironio g. 11, Kaunas",
-
+  email,
+  phone,
+  address,
+  emailHref: `mailto:${email}`,
+  /** `tel:` takes no spaces. */
+  phoneHref: `tel:${phone.replace(/\s+/g, "")}`,
   /**
-   * `src` for the map frame — an *embed* URL, not the URL of a normal map page. Set it to
-   * `null` to drop back to the placeholder panel.
-   *
-   * Google geocodes the `q` address itself, so this is the one place the office address is
-   * written for the map and it stays in step with `address` above. `output=embed` needs no
-   * API key. Note that Google sets cookies for everyone who loads the page.
+   * Where the map image on the contacts page links to. A plain Google Maps search link
+   * (opens the Maps app on phones), not an embed: an embedded map would set Google's
+   * cookies for every visitor, which needs consent in the EU.
    */
-  mapEmbedUrl:
-    "https://www.google.com/maps?q=Maironio+g.+11,+Kaunas&output=embed" as string | null,
-
+  mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`,
 };
-
-/**
- * A detail still waiting to be filled in, written in brackets the way the design mocks it
- * up. Those are rendered as plain text — a `mailto:[email@domain.com]` link would look
- * real and go nowhere. Replacing the value with the real one turns the link on by itself.
- */
-export const isPlaceholder = (value: string) => value.startsWith("[");
